@@ -21,7 +21,7 @@ public class SubjectsController : ControllerBase
     public async Task<IActionResult> CreateSubject([FromBody] SubjectArguments apiSubject, CancellationToken token)
     {
         var subject = new Subject(apiSubject.Title, apiSubject.IsExam);
-        if (await _dbContext.Subjects.AnyAsync(x => x.Title == subject.Title, token))
+        if (await _dbContext.Subjects.AnyAsync(x => x.Title.EqualsCaseInsensitive(apiSubject.Title), token))
             return BadRequest("Subject already exists");
 
         await _dbContext.Subjects.AddAsync(subject, token);
@@ -32,10 +32,10 @@ public class SubjectsController : ControllerBase
     
     [HttpGet]
     [Route("")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SubjectArguments>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SubjectContract>))]
     public async Task<IActionResult> GetSubjects(CancellationToken token)
     {
         var subjects = await _dbContext.Subjects.ToListAsync(token);
-        return Ok(subjects.Select(x => new SubjectArguments { IsExam = x.HasExam, Title = x.Title }));
+        return Ok(subjects.Select(x => new SubjectContract { IsExam = x.HasExam, Title = x.Title, Id = x.Id }));
     }
 }

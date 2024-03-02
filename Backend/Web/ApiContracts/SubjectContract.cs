@@ -1,11 +1,12 @@
 ﻿namespace backend.ApiContracts;
 
-public class SubjectContract
+public class SubjectContract : SubjectArguments
 {
-    public string Title { get; set; }
+    public int Id { get; set; }
 }
 
-public class SubjectArguments : SubjectContract
+public class SubjectArguments
 {
+    public string Title { get; set; }
     public bool IsExam { get; set; }
 }

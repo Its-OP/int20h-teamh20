@@ -7,5 +7,5 @@ public class GroupContract
 
 public class GroupArguments : GroupContract
 {
-    public IEnumerable<SubjectContract> Subjects { get; set; } = new List<SubjectContract>();
+    public IEnumerable<int> SubjectIds { get; set; } = new List<int>();
 }

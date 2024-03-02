@@ -23,11 +23,10 @@ public class GroupsController : ControllerBase
         if (await _dbContext.Groups.AnyAsync(x => string.Equals(x.Code, apiGroup.Code, StringComparison.InvariantCultureIgnoreCase), token))
             return BadRequest("Group already exists");
 
-        if (apiGroup.Subjects.Count() > 15)
+        if (apiGroup.SubjectIds.Count() > 15)
             return BadRequest("Too many subjects");
-
-        var subjectTitles = apiGroup.Subjects.Select(x => x.Title).Distinct(StringComparer.InvariantCultureIgnoreCase);
-        var matchingSubjects = await _dbContext.Subjects.Where(x => subjectTitles.Contains(x.Title, StringComparer.InvariantCultureIgnoreCase)).ToListAsync(token);
+        
+        var matchingSubjects = await _dbContext.Subjects.Where(x => apiGroup.SubjectIds.Contains(x.Id)).ToListAsync(token);
         
         var group = new Group(apiGroup.Code, matchingSubjects);
         await _dbContext.Groups.AddAsync(group, token);

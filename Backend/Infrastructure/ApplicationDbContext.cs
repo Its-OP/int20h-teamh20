@@ -18,6 +18,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Group> Groups { get; set; }
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<Activity> Activities { get; set; }
+    public DbSet<ActivityType> ActivityTypes { get; set; }
     public DbSet<Student> Students { get; set; }
 
 
@@ -57,8 +58,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Id).ValueGeneratedOnAdd();
-
-            entity.HasIndex($"{nameof(Activity.ConductedAt)}", $"{nameof(Subject)}Id").IsUnique();
         });
         
         modelBuilder.Entity<Subject>(entity =>
@@ -80,6 +79,16 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
             entity.HasIndex(x => x.MobileNumber).IsUnique();
             entity.HasIndex(x => x.Email).IsUnique();
+        });
+
+        modelBuilder.Entity<ActivityType>(entity =>
+        {
+            entity.ToTable("ActivityTypes");
+
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            entity.HasIndex(x => x.Title).IsUnique();
         });
     }
 }
