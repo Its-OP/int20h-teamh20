@@ -1,4 +1,4 @@
-const baseApiURL = process.env.BASE_URL || "http://localhost:8080/";
+const baseApiURL = "https://h20-backend.azurewebsites.net/";
 
 export const urls = {
     auctions: `${baseApiURL}auctions/`,
