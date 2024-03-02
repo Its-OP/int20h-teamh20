@@ -28,4 +28,13 @@ public class SubjectsController : ControllerBase
 
         return NoContent();
     }
+    
+    [HttpGet]
+    [Route("")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SubjectContract>))]
+    public async Task<IActionResult> GetSubjects(CancellationToken token)
+    {
+        var subjects = await _dbContext.Subjects.ToListAsync(token);
+        return Ok(subjects.Select(x => new SubjectContract { IsExam = x.HasExam, Title = x.Title }));
+    }
 }
