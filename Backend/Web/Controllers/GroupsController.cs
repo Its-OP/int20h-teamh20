@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace backend.Controllers;
 
 [Route("api/groups")]
-public class GroupsController: ControllerBase
+public class GroupsController : ControllerBase
 {
     private readonly IApplicationDbContext _dbContext;
 
