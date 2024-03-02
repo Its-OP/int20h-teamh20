@@ -21,6 +21,13 @@ public class PIBContract
     public string Patronymic { get; set; }
 }
 
+public class StudentArguments : PIBContract
+{
+    public int GroupId { get; set; }
+    public string Email { get; set; }
+    public string PhoneNumber { get; set; }
+}
+
 /*
 StudentSimple:
     properties:
@@ -52,8 +59,8 @@ public class SimpleStudentContract
             {
                 ++Presences;
 
-                Debug.Assert(activity.Score is not null);
-                AverageScore += (decimal)activity.Score / nActivities;
+                if (activity.Score is not null)
+                    AverageScore += (decimal)activity.Score / nActivities;
             }
             else
             {
