@@ -5,16 +5,19 @@ using Microsoft.Extensions.Configuration;
 
 namespace infrastructure;
 
-public class ApplicationDbContext: DbContext, IApplicationDbContext
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     private readonly IConfiguration _configuration;
-    
-    public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options, IConfiguration configuration) : base(options)
+
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration) : base(options)
     {
         _configuration = configuration;
     }
-    
+
     public DbSet<User> Users { get; set; }
+    public DbSet<Group> Groups { get; set; }
+    public DbSet<SimpleStudent> SimpleStudents { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -27,7 +30,7 @@ public class ApplicationDbContext: DbContext, IApplicationDbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.ToTable("Users");
-            
+
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Id).ValueGeneratedOnAdd();
 
