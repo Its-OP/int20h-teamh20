@@ -2,6 +2,14 @@
 
 public class GroupContract
 {
+    public GroupContract() { }
+    public GroupContract(domain.Group g)
+    {
+        Id = g.Id;
+        Code = g.Code;
+    }
+
+    public int Id { get; set; }
     public string Code { get; set; }
 }
 
