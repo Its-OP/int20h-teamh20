@@ -39,13 +39,15 @@ public class ActivitiesController : ControllerBase
     }
     
     [HttpPost]
-    [Route("subject/{subjectId:int}/at/{conductedAtISO8601}/type/{activityTypeId:int}")]
+    [Route("subject/{subjectId:int}/at/{conductedAtISO8601}/type/{activityTypeId:int}/maxScore/{maxScore:int}")]
     public async Task<IActionResult> CreateActivities([FromRoute] int subjectId,
         [FromRoute] string conductedAtISO8601,
         [FromRoute] int activityTypeId,
+        [FromRoute] int maxScore,
         [FromBody] List<ActivityArguments> apiActivities,
         CancellationToken token)
     {
+        maxScore = Math.Max(maxScore, 0);
         var subject = await _dbContext.Subjects.SingleOrDefaultAsync(x => x.Id == subjectId, token);
         if (subject is null)
             return BadRequest(new ErrorContract($"Subject {subjectId} does not exist"));
@@ -76,7 +78,8 @@ public class ActivitiesController : ControllerBase
             {
                 ActivityType = activityType,
                 ConductedAt = date.RoundToMinutes(),
-                Score = apiActivity.Score,
+                Score = maxScore > apiActivity.Score ? apiActivity.Score : maxScore,
+                MaxScore = maxScore,
                 Student = students[apiActivity.StudentId],
                 Subject = subject,
                 StudentWasPresent = !apiActivity.IsAbsent

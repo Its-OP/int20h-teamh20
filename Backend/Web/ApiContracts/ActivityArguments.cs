@@ -5,7 +5,7 @@ namespace backend.ApiContracts;
 public class ActivityArguments
 {
     public bool IsAbsent { get; set; }
-    public int? Score { get; set; }
+    public int Score { get; set; }
     public int StudentId { get; set; }
 }
 

@@ -32,8 +32,7 @@ public class SimpleStudentContract : PIBContract
             {
                 ++Presences;
 
-                if (activity.Score is not null)
-                    AverageScore += (decimal)activity.Score / nActivities;
+                AverageScore += (decimal)activity.Score / nActivities;
             }
             else
             {
