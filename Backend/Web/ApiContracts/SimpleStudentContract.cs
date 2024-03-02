@@ -1,19 +1,6 @@
-using System.Diagnostics;
 using domain;
 
 namespace backend.ApiContracts;
-
-/*
-PIB:
-    properties:
-        lastname:
-            type: string
-        firstname:
-            type: string
-        patronymic:
-            type: string
-*/
-
 public class PIBContract
 {
     public string Lastname { get; set; }
@@ -28,28 +15,13 @@ public class StudentArguments : PIBContract
     public string PhoneNumber { get; set; }
 }
 
-/*
-StudentSimple:
-    properties:
-        allOf: PIB
-        averageScore:
-            type: number
-        presences:
-            type: integer
-        absences:
-            type: string
-*/
-
-public class SimpleStudentContract
+public class SimpleStudentContract : PIBContract
 {
     public SimpleStudentContract(Student student)
     {
-        AllOf = new PIBContract
-        {
-            Lastname = student.LastName,
-            Firstname = student.FirstName,
-            Patronymic = student.Patronymic,
-        };
+        Lastname = student.LastName;
+        Firstname = student.FirstName;
+        Patronymic = student.Patronymic;
 
         var nActivities = student.Activities.Count();
 
@@ -68,9 +40,24 @@ public class SimpleStudentContract
             }
         }
     }
+    
+    public decimal AverageScore { get; set; }
+    public int Presences { get; set; }
+    public int Absences { get; set; }
+}
 
-    public PIBContract AllOf { get; set; }
-    public decimal AverageScore { get; set; } = 0;
-    public int Presences { get; set; } = 0;
-    public int Absences { get; set; } = 0;
+public class StudentContract : StudentArguments
+{
+    public StudentContract(Student student)
+    {
+        Firstname = student.FirstName;
+        Lastname = student.LastName;
+        Patronymic = student.Patronymic;
+        Email = student.Email;
+        PhoneNumber = student.MobileNumber;
+        GroupId = student.Group.Id;
+        Activities = student.Activities.Select(x => new ActivityContract(x)).ToList();
+    }
+
+    public List<ActivityContract> Activities { get; set; }
 }

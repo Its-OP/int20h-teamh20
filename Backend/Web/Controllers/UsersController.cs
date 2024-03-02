@@ -30,13 +30,13 @@ public class UsersController: ControllerBase
     public async Task<IActionResult> SignUp([FromBody] SignUpArguments signUpArguments, CancellationToken token)
     {
         if (await _context.Users.AnyAsync(x => x.Username == signUpArguments.Username, token))
-            return BadRequest(SignUpErrorCodes.UserAlreadyExists);
+            return BadRequest(new ErrorContract(SignUpErrorCodes.UserAlreadyExists.ToString()));
         
         if (signUpArguments.Password.Length < 6)
-            return BadRequest(SignUpErrorCodes.PasswordTooSimple);
+            return BadRequest(new ErrorContract(SignUpErrorCodes.PasswordTooSimple.ToString()));
         
         if (signUpArguments.Password.Length > 16)
-            return BadRequest(SignUpErrorCodes.PasswordTooLong);
+            return BadRequest(new ErrorContract(SignUpErrorCodes.PasswordTooLong.ToString()));
         
         var user = new User(signUpArguments.Username, await GetPasswordHash(signUpArguments.Password, token));
 
@@ -65,7 +65,7 @@ public class UsersController: ControllerBase
         var secureKey = _configuration["Jwt:Key"];
         var issuer = _configuration["Jwt:Issuer"];
         if (string.IsNullOrEmpty(secureKey) || string.IsNullOrEmpty(issuer))
-            return BadRequest();
+            return BadRequest(new ErrorContract(""));
         
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secureKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

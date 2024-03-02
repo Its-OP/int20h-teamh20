@@ -22,10 +22,10 @@ public class GroupsController : ControllerBase
     {
         var code = apiGroup.Code.ToUpper();
         if (await _dbContext.Groups.AnyAsync(x => x.Code == code, token))
-            return BadRequest("Group already exists");
+            return BadRequest(new ErrorContract("Group already exists"));
 
         if (apiGroup.SubjectIds.Count() > 15)
-            return BadRequest("Too many subjects");
+            return BadRequest(new ErrorContract("Too many subjects"));
         
         var matchingSubjects = await _dbContext.Subjects.Where(x => apiGroup.SubjectIds.Contains(x.Id)).ToListAsync(token);
         
@@ -33,7 +33,7 @@ public class GroupsController : ControllerBase
         await _dbContext.Groups.AddAsync(group, token);
         await _dbContext.SaveChangesAsync(token);
 
-        return NoContent();
+        return Ok(new NoContentContract());
     }
 
     [HttpGet]

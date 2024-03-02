@@ -22,12 +22,12 @@ public class SubjectsController : ControllerBase
     {
         var subject = new Subject(apiSubject.Title, apiSubject.IsExam);
         if (await _dbContext.Subjects.AnyAsync(x => x.Title == apiSubject.Title, token))
-            return BadRequest("Subject already exists");
+            return BadRequest(new ErrorContract("Subject already exists"));
 
         await _dbContext.Subjects.AddAsync(subject, token);
         await _dbContext.SaveChangesAsync(token);
 
-        return NoContent();
+        return Ok(new NoContentContract());
     }
     
     [HttpGet]
