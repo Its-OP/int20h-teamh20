@@ -2,8 +2,8 @@
 
 namespace backend.Controllers;
 
-[Microsoft.AspNetCore.Components.Route("api/system")]
-public class System : ControllerBase
+[Route("api/activities")]
+public class SystemController : ControllerBase
 {
     [HttpGet]
     [Route("health")]
