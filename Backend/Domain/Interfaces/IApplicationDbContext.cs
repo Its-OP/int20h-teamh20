@@ -9,6 +9,7 @@ public interface IApplicationDbContext
     public DbSet<Student> Students { get; }
     public DbSet<Subject> Subjects { get; }
     public DbSet<Activity> Activities { get; }
+    public DbSet<NotificationMessage> Messages { get; }
     DbSet<ActivityType> ActivityTypes { get; }
     public Task<int> SaveChangesAsync(CancellationToken token);
 }

@@ -20,6 +20,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<Activity> Activities { get; set; }
     public DbSet<ActivityType> ActivityTypes { get; set; }
+    public DbSet<NotificationMessage> Messages { get; set; }
     public DbSet<Student> Students { get; set; }
 
 
