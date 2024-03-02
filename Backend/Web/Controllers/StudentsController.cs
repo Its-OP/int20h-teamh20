@@ -38,7 +38,7 @@ public class StudentsController(IApplicationDbContext context) : ControllerBase
         if (await _context.Students.AnyAsync(x => x.Email == apiStudent.Email, token))
             return BadRequest(new ErrorContract($"Student with email '{apiStudent.Email}' already exists."));
 
-        if (await _context.Students.AnyAsync(x => x.MobileNumber == apiStudent.PhoneNumber, token))
+        if (await _context.Students.AnyAsync(x => x.PhoneNumber == apiStudent.PhoneNumber, token))
             return BadRequest(new ErrorContract($"Student with number '{apiStudent.PhoneNumber} already exists."));
 
         var student = new Student
@@ -47,7 +47,7 @@ public class StudentsController(IApplicationDbContext context) : ControllerBase
             FirstName = apiStudent.Firstname,
             LastName = apiStudent.Lastname,
             Patronymic = apiStudent.Patronymic,
-            MobileNumber = apiStudent.PhoneNumber,
+            PhoneNumber = apiStudent.PhoneNumber,
             Email = apiStudent.Email,
         };
 
@@ -59,11 +59,26 @@ public class StudentsController(IApplicationDbContext context) : ControllerBase
 
     [HttpGet]
     [Route("{studentId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudentContract))]
     public async Task<IActionResult> GetStudent([FromRoute] int studentId, CancellationToken token)
     {
         var student = await _context.Students.Include(x => x.Activities).SingleOrDefaultAsync(x => x.Id == studentId, token);
         if (student is null)
             return BadRequest(new ErrorContract($"Student {studentId} does not exist."));
+
+        return Ok(new StudentContract(student));
+    }
+    
+    [HttpPut]
+    [Route("{studentId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudentContract))]
+    public async Task<IActionResult> UpdateSocialMedia([FromRoute] int studentId, [FromBody] SocialMedias media, CancellationToken token)
+    {
+        var student = await _context.Students.Include(x => x.Activities).SingleOrDefaultAsync(x => x.Id == studentId, token);
+        if (student is null)
+            return BadRequest(new ErrorContract($"Student {studentId} does not exist."));
+        
+        student.UpdateSocialMedia(media);
 
         return Ok(new StudentContract(student));
     }

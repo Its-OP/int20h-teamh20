@@ -54,10 +54,12 @@ public class StudentContract : StudentArguments
         Lastname = student.LastName;
         Patronymic = student.Patronymic;
         Email = student.Email;
-        PhoneNumber = student.MobileNumber;
+        PhoneNumber = student.PhoneNumber;
         GroupId = student.Group.Id;
         Activities = student.Activities.Select(x => new ActivityContract(x)).ToList();
+        SocialMedias = student.SocialMedias;
     }
 
     public List<ActivityContract> Activities { get; set; }
+    public SocialMedias SocialMedias { get; set; }
 }
