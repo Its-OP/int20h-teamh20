@@ -1,4 +1,7 @@
-﻿namespace domain;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace domain;
 
 public class Activity : Entity<int>
 {
@@ -10,6 +13,7 @@ public class Activity : Entity<int>
     public virtual ActivityType ActivityType { get; set; }
 }
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum ActivityType
 {
     Exam,

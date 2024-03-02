@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Route("api/subjects")]
 public class SubjectsController : ControllerBase
 {
     private readonly IApplicationDbContext _dbContext;
