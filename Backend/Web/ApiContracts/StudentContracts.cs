@@ -58,10 +58,12 @@ public class StudentContract : StudentArguments
         Email = student.Email;
         PhoneNumber = student.PhoneNumber;
         GroupId = student.Group.Id;
+        GroupCode = student.Group.Code;
         Activities = student.Activities.Select(x => new ActivityContract(x)).ToList();
         SocialMedias = student.SocialMedias;
     }
-
+    
+    public string GroupCode { get; set; }
     public List<ActivityContract> Activities { get; set; }
     public SocialMedias SocialMedias { get; set; }
 }
