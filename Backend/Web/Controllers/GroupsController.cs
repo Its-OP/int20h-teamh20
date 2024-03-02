@@ -18,7 +18,7 @@ public class GroupsController : ControllerBase
 
     [HttpPost]
     [Route("")]
-    public async Task<IActionResult> CreateGroup([FromBody] GroupContract apiGroup, CancellationToken token)
+    public async Task<IActionResult> CreateGroup([FromBody] GroupArguments apiGroup, CancellationToken token)
     {
         if (await _dbContext.Groups.AnyAsync(x => string.Equals(x.Code, apiGroup.Code, StringComparison.InvariantCultureIgnoreCase), token))
             return BadRequest("Group already exists");
