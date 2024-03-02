@@ -3,6 +3,7 @@ namespace domain;
 public class Student : Entity<int>
 {
     public virtual IEnumerable<Activity> Activities { get; set; } = new List<Activity>();
+    public virtual IEnumerable<NotificationMessage> Messages { get; set; } = [];
     public virtual Group Group { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }

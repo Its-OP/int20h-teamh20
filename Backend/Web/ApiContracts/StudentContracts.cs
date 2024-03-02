@@ -19,6 +19,7 @@ public class SimpleStudentContract : PIBContract
 {
     public SimpleStudentContract(Student student)
     {
+        Id = student.Id;
         Lastname = student.LastName;
         Firstname = student.FirstName;
         Patronymic = student.Patronymic;
@@ -40,7 +41,8 @@ public class SimpleStudentContract : PIBContract
             }
         }
     }
-    
+
+    public int Id { get; set; }
     public decimal AverageScore { get; set; }
     public int Presences { get; set; }
     public int Absences { get; set; }
