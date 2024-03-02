@@ -20,7 +20,8 @@ public class GroupsController : ControllerBase
     [Route("")]
     public async Task<IActionResult> CreateGroup([FromBody] GroupArguments apiGroup, CancellationToken token)
     {
-        if (await _dbContext.Groups.AnyAsync(x => string.Equals(x.Code, apiGroup.Code, StringComparison.InvariantCultureIgnoreCase), token))
+        var code = apiGroup.Code.ToUpper();
+        if (await _dbContext.Groups.AnyAsync(x => x.Code == code, token))
             return BadRequest("Group already exists");
 
         if (apiGroup.SubjectIds.Count() > 15)
@@ -28,7 +29,7 @@ public class GroupsController : ControllerBase
         
         var matchingSubjects = await _dbContext.Subjects.Where(x => apiGroup.SubjectIds.Contains(x.Id)).ToListAsync(token);
         
-        var group = new Group(apiGroup.Code, matchingSubjects);
+        var group = new Group(code, matchingSubjects);
         await _dbContext.Groups.AddAsync(group, token);
         await _dbContext.SaveChangesAsync(token);
 
