@@ -1,4 +1,4 @@
-const baseApiURL = "https://h20-backend.azurewebsites.net/api";
+const baseApiURL = "https://h20-backend.azurewebsites.net/api/";
 
 export const urls = {
     auctions: `${baseApiURL}auctions/`,
