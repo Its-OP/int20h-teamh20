@@ -57,6 +57,9 @@ public class ActivitiesController : ControllerBase
         if (!DateTime.TryParse(conductedAtISO8601, out var date))
             return BadRequest("Date cannot be parsed");
         
+        if (date > DateTime.Now)
+            return BadRequest("Activity cannot be performed in the future");
+        
         if (apiActivities.Count > 50)
             return BadRequest("Too many activities");
 
