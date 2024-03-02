@@ -1,7 +1,6 @@
 ﻿using backend.ApiContracts;
 using domain;
 using domain.Interfaces;
-using infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
