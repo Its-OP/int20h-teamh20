@@ -2,6 +2,7 @@
 using domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace infrastructure;
 
@@ -71,6 +72,11 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             entity.HasIndex(x => x.Title).IsUnique();
         });
         
+        modelBuilder.Entity<SocialMedias>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+        });
+        
         modelBuilder.Entity<Student>(entity =>
         {
             entity.ToTable("Students");
@@ -78,8 +84,10 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            entity.HasIndex(x => x.MobileNumber).IsUnique();
+            entity.HasIndex(x => x.PhoneNumber).IsUnique();
             entity.HasIndex(x => x.Email).IsUnique();
+
+            entity.HasOne(x => x.SocialMedias).WithOne().HasForeignKey<SocialMedias>(x => x.StudentId);
         });
 
         modelBuilder.Entity<ActivityType>(entity =>
