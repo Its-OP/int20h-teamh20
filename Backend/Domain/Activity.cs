@@ -4,9 +4,10 @@ public class Activity : Entity<int>
 {
     public virtual Subject Subject { get; set; }
     public virtual DateTime ConductedAt { get; set; }
-    public virtual int? Score { get; set; }
-    public virtual bool StudentWasPresent { get; set; }
-    // TODO: reference Student
+    public int? Score { get; set; }
+    public bool StudentWasPresent { get; set; }
+    public virtual Student Student { get; set; }
+    public virtual ActivityType ActivityType { get; set; }
 }
 
 public enum ActivityType

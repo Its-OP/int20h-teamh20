@@ -18,7 +18,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Group> Groups { get; set; }
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<Activity> Activities { get; set; }
-    public DbSet<SimpleStudent> SimpleStudents { get; set; }
+    public DbSet<Student> Students { get; set; }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -68,6 +68,17 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             entity.Property(x => x.Id).ValueGeneratedOnAdd();
 
             entity.HasIndex(x => x.Title).IsUnique();
+        });
+        
+        modelBuilder.Entity<Student>(entity =>
+        {
+            entity.ToTable("Students");
+            
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            entity.HasIndex(x => x.MobileNumber).IsUnique();
+            entity.HasIndex(x => x.Email).IsUnique();
         });
     }
 }
