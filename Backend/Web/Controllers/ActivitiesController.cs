@@ -43,4 +43,23 @@ public class ActivitiesController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet]
+    [Route("{studentId:int}/{subjectTitle}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ActivityContract>))]
+    public async Task<IActionResult> GetActivities([FromQuery] int studentId, [FromQuery] string subjectTitle, CancellationToken token)
+    {
+        var activities = await _dbContext.Activities.Where(x => x.Student.Id == studentId && string.Equals(x.Subject.Title, subjectTitle)).ToListAsync(token);
+        var apiActivities = activities.Select(x => new ActivityContract
+        {
+            ConductedAt = x.ConductedAt.ToString(),
+            IsAbsent = !x.StudentWasPresent,
+            Score = x.Score,
+            StudentId = studentId,
+            SubjectTitle = subjectTitle,
+            Type = x.ActivityType
+        });
+
+        return Ok(apiActivities);
+    }
 }
