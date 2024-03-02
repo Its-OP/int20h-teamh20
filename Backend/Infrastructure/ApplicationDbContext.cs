@@ -16,6 +16,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Group> Groups { get; set; }
+    public DbSet<Subject> Subjects { get; set; }
+    public DbSet<Activity> Activities { get; set; }
     public DbSet<SimpleStudent> SimpleStudents { get; set; }
 
 
@@ -36,6 +38,36 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
             entity.HasIndex(x => x.Username).IsUnique();
             entity.HasIndex(x => new { x.Username, x.PasswordHash });
+        });
+        
+        modelBuilder.Entity<Group>(entity =>
+        {
+            entity.ToTable("Groups");
+            
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            entity.HasIndex(x => x.Code).IsUnique();
+        });
+        
+        modelBuilder.Entity<Activity>(entity =>
+        {
+            entity.ToTable("Activities");
+            
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            entity.HasIndex($"{nameof(Activity.ConductedAt)}", $"{nameof(Subject)}Id").IsUnique();
+        });
+        
+        modelBuilder.Entity<Subject>(entity =>
+        {
+            entity.ToTable("Subjects");
+            
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            entity.HasIndex(x => x.Title).IsUnique();
         });
     }
 }

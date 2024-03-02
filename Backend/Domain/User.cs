@@ -1,6 +1,6 @@
 ﻿namespace domain;
 
-public class User
+public class User : Entity<int>
 {
     public User() {}
     public User(string username, string passwordHash)
@@ -9,7 +9,6 @@ public class User
         PasswordHash = passwordHash;
     }
 
-    public int Id { get; set; }
     public string Username { get; set; }
     public string PasswordHash { get; set; }
 }
