@@ -1,16 +1,16 @@
 version: '3.8'
 
 services:
-  backend:
-    build:
-      context: ./Backend
-    container_name: server
-    ports:
-      - 5000:80
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__Database=Host=postgres;Database=h20-solution;Username=admin;Password=admin
+  # backend:
+  #   build:
+  #     context: ./Backend
+  #   container_name: server
+  #   ports:
+  #     - 5000:80
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:80
+  #     - ConnectionStrings__Database=Host=postgres;Database=h20-solution;Username=admin;Password=admin
 
   postgres:
     image: postgres

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using infrastructure;
@@ -11,9 +12,11 @@ using infrastructure;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240302144400_Add Subjects and Activitieis")]
+    partial class AddSubjectsandActivitieis
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,9 +36,6 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ActivityTypeId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("ConductedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -43,9 +43,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("Score")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("StudentId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("StudentWasPresent")
@@ -56,36 +53,12 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActivityTypeId");
-
-                    b.HasIndex("StudentId");
-
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("Activities", (string)null);
-                });
-
-            modelBuilder.Entity("domain.ActivityType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Title")
+                    b.HasIndex("ConductedAt", "SubjectId")
                         .IsUnique();
 
-                    b.ToTable("ActivityTypes", (string)null);
+                    b.ToTable("Activities", (string)null);
                 });
 
             modelBuilder.Entity("domain.Group", b =>
@@ -111,53 +84,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Groups", (string)null);
                 });
 
-            modelBuilder.Entity("domain.Student", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("MobileNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Patronymic")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("MobileNumber")
-                        .IsUnique();
-
-                    b.ToTable("Students", (string)null);
-                });
-
             modelBuilder.Entity("domain.Subject", b =>
                 {
                     b.Property<int>("Id")
@@ -169,9 +95,6 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("integer");
-
                     b.Property<bool>("HasExam")
                         .HasColumnType("boolean");
 
@@ -180,8 +103,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
 
                     b.HasIndex("Title")
                         .IsUnique();
@@ -220,59 +141,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("domain.Activity", b =>
                 {
-                    b.HasOne("domain.ActivityType", "ActivityType")
-                        .WithMany()
-                        .HasForeignKey("ActivityTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("domain.Student", "Student")
-                        .WithMany("Activities")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("domain.Subject", "Subject")
                         .WithMany("Activities")
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ActivityType");
-
-                    b.Navigation("Student");
-
                     b.Navigation("Subject");
-                });
-
-            modelBuilder.Entity("domain.Student", b =>
-                {
-                    b.HasOne("domain.Group", "Group")
-                        .WithMany("Students")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-                });
-
-            modelBuilder.Entity("domain.Subject", b =>
-                {
-                    b.HasOne("domain.Group", null)
-                        .WithMany("Subjects")
-                        .HasForeignKey("GroupId");
-                });
-
-            modelBuilder.Entity("domain.Group", b =>
-                {
-                    b.Navigation("Students");
-
-                    b.Navigation("Subjects");
-                });
-
-            modelBuilder.Entity("domain.Student", b =>
-                {
-                    b.Navigation("Activities");
                 });
 
             modelBuilder.Entity("domain.Subject", b =>
