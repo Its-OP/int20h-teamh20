@@ -48,6 +48,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             entity.Property(x => x.Id).ValueGeneratedOnAdd();
 
             entity.HasIndex(x => x.Code).IsUnique();
+            entity.HasMany(x => x.Subjects).WithOne().IsRequired(false);
         });
         
         modelBuilder.Entity<Activity>(entity =>
