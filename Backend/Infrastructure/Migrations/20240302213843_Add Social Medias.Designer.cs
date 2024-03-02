@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using infrastructure;
@@ -11,9 +12,11 @@ using infrastructure;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240302213843_Add Social Medias")]
+    partial class AddSocialMedias
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,43 +114,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Groups", (string)null);
                 });
 
-            modelBuilder.Entity("domain.SocialMedias", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Facebook")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("GitHub")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("LinkedIn")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Telegram")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Twitter")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StudentId")
-                        .IsUnique();
-
-                    b.ToTable("SocialMedias");
-                });
-
             modelBuilder.Entity("domain.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -179,6 +145,10 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SocialMedias")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -282,15 +252,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("domain.SocialMedias", b =>
-                {
-                    b.HasOne("domain.Student", null)
-                        .WithOne("SocialMedias")
-                        .HasForeignKey("domain.SocialMedias", "StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("domain.Student", b =>
                 {
                     b.HasOne("domain.Group", "Group")
@@ -319,9 +280,6 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("domain.Student", b =>
                 {
                     b.Navigation("Activities");
-
-                    b.Navigation("SocialMedias")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("domain.Subject", b =>
