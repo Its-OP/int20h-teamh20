@@ -1,23 +1,12 @@
 namespace domain;
 
-/*
-StudentSimple:
-    properties:
-        allOf: PIB
-        averageScore:
-            type: number
-        presences:
-            type: integer
-        absences:
-            type: string
-*/
-using PIB = string;
-
-public class Student(PIB allOf, float averageScore, int presences, int absences)
+public class Student : Entity<int>
 {
-    public int Id { get; set; }
-    public PIB AllOf { get; set; } = allOf;
-    public float AverageScore { get; set; } = averageScore;
-    public int Presences { get; set; } = presences;
-    public int Absences { get; set; } = absences;
+    public virtual IEnumerable<Activity> Activities { get; set; } = new List<Activity>();
+    public virtual Group Group { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Patronymic { get; set; }
+    public string MobileNumber { get; set; }
+    public string Email { get; set; }
 }

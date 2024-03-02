@@ -10,7 +10,7 @@ public class Subject : Entity<int>
         HasExam = hasExam;
     }
 
-    public virtual string Title { get; set; }
+    public string Title { get; set; }
     public virtual IEnumerable<Activity> Activities { get; set; } = new List<Activity>();
-    public virtual bool HasExam { get; set; }
+    public bool HasExam { get; set; }
 }

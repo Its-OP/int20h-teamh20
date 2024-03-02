@@ -10,6 +10,6 @@ public class Group : Entity<int>
         Code = code;
     }
 
-    public virtual string Code { get; set; }
-    // TODO: reference Students
+    public string Code { get; set; }
+    public virtual IEnumerable<Student> Students { get; set; } = new List<Student>();
 }
