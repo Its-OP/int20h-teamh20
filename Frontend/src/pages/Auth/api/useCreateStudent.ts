@@ -7,7 +7,7 @@ export const useCreateStudent = () => {
 
     const createStudent = async (data: any) => {
         const res = await request(students, HTTP_METHOD.POST, data);
-        return res?.result;
+        return res?.success;
     };
 
     return {

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { ModalData } from "../../../shared/model/adminTypes.ts";
 import {
     Button,
@@ -18,11 +18,16 @@ const CreateActivityType: FC<ModalData> = ({ open, hideModal }) => {
     const { createSubject, subjectCreateLoading } = useCreateSubject();
 
     const [form] = useForm();
+    useEffect(() => {
+        if (!visible) {
+            form.resetFields();
+        }
+    }, [visible]);
 
     const onFinish = async (data: any) => {
         const res = await createSubject(data);
         if (res) {
-            message.success("");
+            message.success("Предмет створено успішно");
             form.resetFields();
             hideModal();
         } else {
@@ -37,12 +42,21 @@ const CreateActivityType: FC<ModalData> = ({ open, hideModal }) => {
             open={visible}
             onCancel={hideModal}
         >
-            <Form form={form} onFinish={onFinish} layout={"vertical"}>
+            <Form
+                initialValues={{ isExam: false }}
+                form={form}
+                onFinish={onFinish}
+                layout={"vertical"}
+            >
                 <div style={{ display: "flex", gap: 40 }}>
                     <Form.Item name={"title"} label={"Назва"}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name={"isExam"} label={"Форма заліку екзамен"}>
+                    <Form.Item
+                        name={"isExam"}
+                        valuePropName='checked'
+                        label={"Форма заліку екзамен"}
+                    >
                         <Checkbox />
                     </Form.Item>
                 </div>

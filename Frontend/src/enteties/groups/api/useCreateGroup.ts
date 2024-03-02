@@ -8,7 +8,7 @@ export const useCreateGroup = () => {
     const createGroup = async (data: any) => {
         const res = await request(groups, HTTP_METHOD.POST, data);
 
-        return res?.result;
+        return res?.success;
     };
 
     return {

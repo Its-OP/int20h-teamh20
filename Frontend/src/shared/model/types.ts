@@ -21,6 +21,7 @@ export interface Activity {
 export interface Subject {
     title: string;
     isExam: boolean;
+    id: number;
 }
 
 export interface StudentActivities {
@@ -29,7 +30,7 @@ export interface StudentActivities {
 }
 
 export interface StudentComplete extends PIB {
-    mobileNumber: string;
+    phoneNumber: string;
     email: string;
     Activities: Activity[];
     subject: string;
@@ -37,5 +38,6 @@ export interface StudentComplete extends PIB {
 
 export interface Group {
     code: string;
+    id: number;
     subjects: Subject[];
 }

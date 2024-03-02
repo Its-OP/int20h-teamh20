@@ -13,7 +13,7 @@ export const useStudents = () => {
     ]);
 
     const fetchStudents = async (id: number | string) => {
-        const res = await request(`${studentsUrl}?groupId=${id}`);
+        const res = await request(`${studentsUrl}group/${id}`);
 
         setStudents(res);
     };

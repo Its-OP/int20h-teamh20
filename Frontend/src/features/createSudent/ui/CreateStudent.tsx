@@ -1,9 +1,10 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Button, Form, Input, message, Modal, Popconfirm, Select } from "antd";
 import { ModalData } from "../../../shared/model/adminTypes.ts";
 import { ModalKey } from "../../../pages/Admin/ui/Admin.tsx";
 import { useCreateStudent } from "../../../pages/Auth/api/useCreateStudent.ts";
 import { errNotificationMessage } from "../../../shared/model/const.ts";
+import { useGroups } from "../../../enteties/groups/api/useGroups.ts";
 const { useForm } = Form;
 
 const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
@@ -11,6 +12,15 @@ const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
     const [form] = useForm();
 
     const { createUserLoading, createStudent } = useCreateStudent();
+    const { groups, fetchGroups, groupsLoading } = useGroups();
+
+    useEffect(() => {
+        if (visible) {
+            fetchGroups();
+        } else {
+            form.resetFields();
+        }
+    }, [visible]);
 
     const onFinish = async (values: any) => {
         const res = await createStudent(values);
@@ -39,24 +49,54 @@ const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
                         gap: "0 40px"
                     }}
                 >
-                    <Form.Item name={"lastname"} label={"Прізвище"}>
+                    <Form.Item
+                        rules={[{ required: true }]}
+                        name={"lastname"}
+                        label={"Прізвище"}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name={"firstname"} label={"Ім'я"}>
+                    <Form.Item
+                        rules={[{ required: true }]}
+                        name={"firstname"}
+                        label={"Ім'я"}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item name={"patronymic"} label={"По батькові"}>
+                    <Form.Item
+                        rules={[{ required: true }]}
+                        name={"patronymic"}
+                        label={"По батькові"}
+                    >
                         <Input />
                     </Form.Item>
 
-                    <Form.Item name={"mobileNumber"} label={"Номер телефону"}>
+                    <Form.Item
+                        rules={[{ required: true }]}
+                        name={"phoneNumber"}
+                        label={"Номер телефону"}
+                    >
                         <Input type={"tel"} />
                     </Form.Item>
-                    <Form.Item name={"email"} label={"Email"}>
+                    <Form.Item
+                        rules={[{ required: true }]}
+                        name={"email"}
+                        label={"Email"}
+                    >
                         <Input type={"mail"} />
                     </Form.Item>
-                    <Form.Item name={"subject"} label={"Група"}>
-                        <Select />
+                    <Form.Item
+                        rules={[{ required: true }]}
+                        name={"groupId"}
+                        label={"Група"}
+                    >
+                        <Select
+                            options={groups.map(group => ({
+                                value: group.id,
+                                label: group.code
+                            }))}
+                            loading={groupsLoading}
+                        />
                     </Form.Item>
                 </div>
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>

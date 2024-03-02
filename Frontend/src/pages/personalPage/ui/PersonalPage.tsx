@@ -26,7 +26,7 @@ const PersonalPage: FC = () => {
                     level={2}
                 >{`${student.firstname} ${student.lastname} ${student.patronymic}`}</Typography.Title>
             </Col>
-            <Col xs={12}>
+            <Col lg={12} xs={24}>
                 <Card title={"Персональна інформація"}>
                     <Typography.Title level={5}>Група</Typography.Title>
                     <Typography.Text>{student.subject}</Typography.Text>
@@ -35,14 +35,14 @@ const PersonalPage: FC = () => {
                     <Typography>
                         <span style={{ width: "20%" }}>Номер телефону:</span>
                         <span style={{ marginLeft: 20 }}>
-                            {student.mobileNumber}
+                            {student.phoneNumber}
                         </span>
-                        <CopiIcon data={student.mobileNumber} />
+                        <CopiIcon data={student.phoneNumber} />
                     </Typography>
                     <Typography>
                         <span style={{ width: "20%" }}>Email:</span>
                         <span style={{ marginLeft: 20 }}>{student.email}</span>
-                        <CopiIcon data={student.mobileNumber} />
+                        <CopiIcon data={student.email} />
                     </Typography>
                     <Divider />
                     <Typography.Title level={5}>Соц мережі</Typography.Title>
@@ -50,7 +50,7 @@ const PersonalPage: FC = () => {
                     <Button>Редагувати</Button>
                 </Card>
             </Col>
-            <Col xs={12}>
+            <Col lg={12} xs={24}>
                 <Card title={"Успішність"} style={{ minHeight: "100%" }}>
                     <Table
                         loading={studentLoading}

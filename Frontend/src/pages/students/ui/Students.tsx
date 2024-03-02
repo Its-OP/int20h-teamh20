@@ -34,8 +34,8 @@ const Students: FC = () => {
                 <Col xs={24}>
                     <Select
                         options={groups.map(group => ({
-                            value: group.code,
-                            label: group.subjects
+                            value: group.id,
+                            label: group.code
                         }))}
                         onChange={setGroup}
                         value={group}

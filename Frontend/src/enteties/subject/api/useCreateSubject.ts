@@ -9,7 +9,7 @@ const useCreateSubject = () => {
     const createSubject = async (data: Subject) => {
         const res = await request(subject, HTTP_METHOD.POST, data);
 
-        return res?.result;
+        return res?.success;
     };
 
     return {

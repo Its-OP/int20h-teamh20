@@ -22,7 +22,7 @@ const CreateGroup: FC<ModalData> = ({ open, hideModal }) => {
     const onFinish = async (data: any) => {
         const res = await createGroup(data);
         if (res) {
-            message.success("");
+            message.success("Група створена успішно");
             form.resetFields();
             hideModal();
         } else {
@@ -33,29 +33,37 @@ const CreateGroup: FC<ModalData> = ({ open, hideModal }) => {
     return (
         <Modal
             footer={null}
-            title={"Створення предмету"}
+            title={"Створення групи"}
             open={visible}
             onCancel={hideModal}
         >
             <Form form={form} onFinish={onFinish} layout={"vertical"}>
+                <div style={{ display: "flex", gap: 40 }}>
+                    <Form.Item name={"code"} label={"Назва"}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        style={{ width: "100%" }}
+                        name={"subjectIds"}
+                        label={"Предмети"}
+                    >
+                        <Select
+                            style={{ width: "100%" }}
+                            mode={"multiple"}
+                            loading={subjectsLoading}
+                            options={subjects.map(subj => ({
+                                value: subj.id,
+                                label: subj.title
+                            }))}
+                        />
+                    </Form.Item>
+                </div>
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <Popconfirm
                         title={"Ви впевнені що хочете створити групу ?"}
                         onConfirm={form.submit}
                         disabled={createGroupLoading}
                     >
-                        <Form.Item name={"title"} label={"Назва"}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item name={"isExam"} label={"Форма заліку"}>
-                            <Select
-                                loading={subjectsLoading}
-                                options={subjects.map(subj => ({
-                                    value: subj.title,
-                                    label: subj.title
-                                }))}
-                            />
-                        </Form.Item>
                         <Button loading={createGroupLoading} type={"primary"}>
                             Створити
                         </Button>
