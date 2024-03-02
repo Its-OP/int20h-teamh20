@@ -18,7 +18,7 @@ public class SubjectsController : ControllerBase
 
     [HttpPost]
     [Route("")]
-    public async Task<IActionResult> CreateSubject([FromBody] SubjectContract apiSubject, CancellationToken token)
+    public async Task<IActionResult> CreateSubject([FromBody] SubjectArguments apiSubject, CancellationToken token)
     {
         var subject = new Subject(apiSubject.Title, apiSubject.IsExam);
         if (await _dbContext.Subjects.AnyAsync(x => x.Title == subject.Title, token))
@@ -32,10 +32,10 @@ public class SubjectsController : ControllerBase
     
     [HttpGet]
     [Route("")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SubjectContract>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SubjectArguments>))]
     public async Task<IActionResult> GetSubjects(CancellationToken token)
     {
         var subjects = await _dbContext.Subjects.ToListAsync(token);
-        return Ok(subjects.Select(x => new SubjectContract { IsExam = x.HasExam, Title = x.Title }));
+        return Ok(subjects.Select(x => new SubjectArguments { IsExam = x.HasExam, Title = x.Title }));
     }
 }

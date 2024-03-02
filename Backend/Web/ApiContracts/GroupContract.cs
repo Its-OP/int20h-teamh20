@@ -1,6 +1,5 @@
 ﻿namespace backend.ApiContracts;
 
-
 public class GroupContract
 {
     public string Code { get; set; }
