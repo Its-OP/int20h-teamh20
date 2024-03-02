@@ -1,6 +1,8 @@
 import { FC, useState } from "react";
 import { Button, Col, Collapse, Row, Space, Typography } from "antd";
 import { CreateStudent } from "../../../features/createSudent";
+import CreateGroup from "../../../features/createGroup/ui/CreateGroup.tsx";
+import CreateActivityType from "../../../features/createActivityType/ui/CreateActivityType.tsx";
 
 export enum ModalKey {
     Defult,
@@ -93,6 +95,8 @@ const Admin: FC = () => {
                 </Col>
             </Row>
             <CreateStudent open={openModal} hideModal={closeModal} />
+            <CreateGroup open={openModal} hideModal={closeModal} />
+            <CreateActivityType open={openModal} hideModal={closeModal} />
         </>
     );
 };

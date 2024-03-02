@@ -9,7 +9,7 @@ export const useStudent = () => {
     const [student, setStudent] =
         useState<StudentComplete>(studentCompleteMock);
 
-    const fetchStudent = async (id: number) => {
+    const fetchStudent = async (id: string) => {
         const res = await request(``);
 
         setStudent(res);

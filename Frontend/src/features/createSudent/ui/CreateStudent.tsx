@@ -1,14 +1,29 @@
 import { FC } from "react";
-import { Button, Form, Input, Modal, Popconfirm, Select } from "antd";
+import { Button, Form, Input, message, Modal, Popconfirm, Select } from "antd";
 import { ModalData } from "../../../shared/model/adminTypes.ts";
 import { ModalKey } from "../../../pages/Admin/ui/Admin.tsx";
 import { useCreateStudent } from "../../../pages/Auth/api/useCreateStudent.ts";
+import { errNotificationMessage } from "../../../shared/model/const.ts";
 const { useForm } = Form;
+
 const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
     const visible = open === ModalKey.CreateStudent;
     const [form] = useForm();
 
     const { createUserLoading, createStudent } = useCreateStudent();
+
+    const onFinish = async (values: any) => {
+        const res = await createStudent(values);
+
+        if (res) {
+            message.success("Студент успішно створено");
+            form.resetFields();
+            hideModal();
+        } else {
+            message.error(errNotificationMessage);
+        }
+    };
+
     return (
         <Modal
             footer={null}
@@ -16,7 +31,7 @@ const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
             open={visible}
             onCancel={hideModal}
         >
-            <Form form={form} onFinish={createStudent} layout={"vertical"}>
+            <Form form={form} onFinish={onFinish} layout={"vertical"}>
                 <div
                     style={{
                         display: "grid",
@@ -48,8 +63,11 @@ const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
                     <Popconfirm
                         title={"Ви впевнені що хочете створити студента ?"}
                         onConfirm={form.submit}
+                        disabled={createUserLoading}
                     >
-                        <Button type={"primary"}>Створити</Button>
+                        <Button loading={createUserLoading} type={"primary"}>
+                            Створити
+                        </Button>
                     </Popconfirm>
                 </div>
             </Form>

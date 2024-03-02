@@ -10,16 +10,22 @@ export const Router = () => {
     const { userId } = useAppSelector(state => state.user);
     return (
         <Routes>
-            {true && (
+            {userId ? (
                 <Route path={"/"} element={<AuthLayout />}>
                     <Route path={"/students"} element={<Students />} />
                     <Route path={"/student/:id"} element={<PersonalPage />} />
                     <Route path={"/admin"} element={<Admin />} />
+                    <Route
+                        path={"/*"}
+                        element={<Navigate to={"/students"} />}
+                    />
                 </Route>
+            ) : (
+                <>
+                    <Route path={"/auth"} element={<Auth />} />
+                    <Route path={"/*"} element={<Navigate to={"/auth"} />} />
+                </>
             )}
-
-            <Route path={"/auth"} element={<Auth />} />
-            <Route path={"/*"} element={<Navigate to={"/auth"} />} />
         </Routes>
     );
 };

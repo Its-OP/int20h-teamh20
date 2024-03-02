@@ -15,11 +15,11 @@ const Students: FC = () => {
     }, []);
 
     useEffect(() => {
-        // if (group) {
-        //     fetchStudents();
-        // } else {
-        //     clearStudents();
-        // }
+        if (group) {
+            fetchStudents(group);
+        } else {
+            clearStudents();
+        }
     }, [group]);
 
     return (
@@ -45,14 +45,16 @@ const Students: FC = () => {
                         allowClear
                     />
                 </Col>
-                <Col xs={24}>
-                    <Table
-                        loading={studentsLoading}
-                        dataSource={students}
-                        columns={studentsColumns}
-                        pagination={false}
-                    />
-                </Col>
+                {group && (
+                    <Col xs={24}>
+                        <Table
+                            loading={studentsLoading}
+                            dataSource={students}
+                            columns={studentsColumns}
+                            pagination={false}
+                        />
+                    </Col>
+                )}
             </Row>
         </>
     );

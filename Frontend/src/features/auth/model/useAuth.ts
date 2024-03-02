@@ -47,7 +47,7 @@ export const useAuth = () => {
     const signUp = async (body: authReqType) => {
         const response = await request(signUpUrl, HTTP_METHOD.POST, body);
         if (!response.err) {
-            dispatch(userSlice.actions.logout());
+            setCookies("token", response.token);
         }
     };
     return { loading, signIn, signUp };

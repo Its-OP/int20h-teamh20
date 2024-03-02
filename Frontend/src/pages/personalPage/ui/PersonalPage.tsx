@@ -1,16 +1,24 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { Button, Card, Col, Divider, Row, Table, Typography } from "antd";
 import { useStudent } from "../../../enteties/student/api/useStudent.ts";
-import classes from "./styles.module.css";
 import { CopiIcon } from "../../../shared/ui/CopiIcon.tsx";
 import { activitiesColumn } from "../model/columns.tsx";
+import { useParams } from "react-router-dom";
 const PersonalPage: FC = () => {
     const { student, fetchStudent, studentLoading } = useStudent();
+
+    const { id } = useParams();
+
+    useEffect(() => {
+        if (id) {
+            fetchStudent(id);
+        }
+    }, []);
 
     if (!student) {
         return null;
     }
-    console.log(student);
+
     return (
         <Row gutter={[40, 40]}>
             <Col xs={24}>
