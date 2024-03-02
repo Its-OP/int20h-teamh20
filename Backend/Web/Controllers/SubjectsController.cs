@@ -21,7 +21,7 @@ public class SubjectsController : ControllerBase
     public async Task<IActionResult> CreateSubject([FromBody] SubjectArguments apiSubject, CancellationToken token)
     {
         var subject = new Subject(apiSubject.Title, apiSubject.IsExam);
-        if (await _dbContext.Subjects.AnyAsync(x => x.Title.EqualsCaseInsensitive(apiSubject.Title), token))
+        if (await _dbContext.Subjects.AnyAsync(x => x.Title == apiSubject.Title, token))
             return BadRequest("Subject already exists");
 
         await _dbContext.Subjects.AddAsync(subject, token);

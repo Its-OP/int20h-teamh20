@@ -1,6 +1,7 @@
 ﻿using backend.ApiContracts;
 using domain;
 using domain.Interfaces;
+using infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,7 +21,7 @@ public class ActivitiesController : ControllerBase
     [Route("types")]
     public async Task<IActionResult> CreateActivityType([FromBody] ActivityTypeContract apiActivity, CancellationToken token)
     {
-        if (await _dbContext.ActivityTypes.AnyAsync(x => x.Title.EqualsCaseInsensitive(apiActivity.Title), token))
+        if (await _dbContext.ActivityTypes.AnyAsync(x => x.Title == apiActivity.Title, token))
             return BadRequest($"ActivityType {apiActivity.Title} already exists");
 
         var type = new ActivityType { Title = apiActivity.Title };
