@@ -19,6 +19,7 @@ public class SimpleStudentContract : PIBContract
 {
     public SimpleStudentContract(Student student)
     {
+        Id = student.Id;
         Lastname = student.LastName;
         Firstname = student.FirstName;
         Patronymic = student.Patronymic;
@@ -41,6 +42,7 @@ public class SimpleStudentContract : PIBContract
         }
     }
 
+    public int Id { get; set; }
     public decimal AverageScore { get; set; }
     public int Presences { get; set; }
     public int Absences { get; set; }
@@ -50,7 +52,6 @@ public class StudentContract : StudentArguments
 {
     public StudentContract(Student student)
     {
-        Id = student.Id;
         Firstname = student.FirstName;
         Lastname = student.LastName;
         Patronymic = student.Patronymic;
@@ -61,7 +62,6 @@ public class StudentContract : StudentArguments
         SocialMedias = student.SocialMedias;
     }
 
-    public int Id { get; set; }
     public List<ActivityContract> Activities { get; set; }
     public SocialMedias SocialMedias { get; set; }
 }
