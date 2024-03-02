@@ -2,8 +2,7 @@
 
 namespace backend.Controllers;
 
-[Route("api/groups")]
-public class GroupsController: ControllerBase
+public class SubjectsController : ControllerBase
 {
     
 }

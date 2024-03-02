@@ -1,6 +1,6 @@
 ﻿namespace domain;
 
-public class Group
+public class Group : Entity<int>
 {
     public Group() {}
     
@@ -10,6 +10,6 @@ public class Group
         Code = code;
     }
 
-    public virtual int Id { get; set; }
     public virtual string Code { get; set; }
+    // TODO: reference Students
 }
