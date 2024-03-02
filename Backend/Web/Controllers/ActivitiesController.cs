@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
-[Route("api/subjects")]
+[Route("api/activities")]
 public class ActivitiesController : ControllerBase
 {
     private readonly IApplicationDbContext _dbContext;
@@ -52,7 +52,7 @@ public class ActivitiesController : ControllerBase
         var activities = await _dbContext.Activities.Where(x => x.Student.Id == studentId && string.Equals(x.Subject.Title, subjectTitle)).ToListAsync(token);
         var apiActivities = activities.Select(x => new ActivityContract
         {
-            ConductedAt = x.ConductedAt.ToString(),
+            ConductedAt = x.ConductedAt.ToString("s"),
             IsAbsent = !x.StudentWasPresent,
             Score = x.Score,
             StudentId = studentId,
