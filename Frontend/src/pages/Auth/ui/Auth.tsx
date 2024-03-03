@@ -5,7 +5,7 @@ import { BASE_TITLE } from "../../../shared/model/const.ts";
 import { useAuth } from "../../../features/auth/model/useAuth.ts";
 
 type FieldType = {
-    username?: string;
+    email?: string;
     password?: string;
 };
 
@@ -45,7 +45,7 @@ const Auth = () => {
                     >
                         <Form.Item<FieldType>
                             label='Логін'
-                            name='username'
+                            name='email'
                             rules={[
                                 {
                                     required: true,
