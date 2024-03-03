@@ -142,8 +142,8 @@ const CreateActivity: FC<ModalData> = ({ open, hideModal }) => {
                 <div style={{ display: "flex", gap: 40 }}>
                     <Form.Item
                         style={{ width: "100%" }}
-                        name={"subjectIds"}
-                        label={"Группи"}
+                        name={"groupId"}
+                        label={"Групи"}
                     >
                         <Select
                             style={{ width: "100%" }}
