@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SendGrid.Helpers.Mail;
 
 var builder = WebApplication.CreateBuilder(args);
 

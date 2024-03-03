@@ -1,40 +1,40 @@
 
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using domain;
 using Microsoft.AspNetCore.Mvc;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace backend.Controllers;
 
-[Route("api/email")]
-public class EmailController : ControllerBase
+public class EmailMessage
 {
-    private readonly EmailSender _emailSender;
+    public int ReceiverId { get; set; }
+    public string Title { get; set; }
+    public string Body { get; set; }
+}
 
-    public EmailController(IConfiguration configuration)
-    {
-        var server = configuration["SmtpCredentials:Server"];
-        var port = configuration["SmtpCredentials:Port"];
-        var login = configuration["SmtpCredentials:Login"];
-        var password = configuration["SmtpCredentials:Password"];
-
-        if (string.IsNullOrEmpty(server) || string.IsNullOrEmpty(port) || string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
-            throw new Exception("Invalid SMTP Server configuratio.");
-
-        _emailSender = new(server, int.Parse(port), login, password);
-    }
+[Route("api/email")]
+public class EmailController(IConfiguration configuration) : ControllerBase
+{
+    private readonly IConfiguration _configuration = configuration;
 
     [HttpPost]
     [Route("")]
-    public IActionResult SendEmail([FromBody] EmailMessage apiEmail)
+    public async Task<IActionResult> SendEmail([FromBody] EmailMessage apiEmail)
     {
-        // try
-        // {
-            _emailSender.SendEmail(apiEmail);
-            return Ok(new { Result = true });
-        // }
-        // catch (Exception ex)
-        // {
-        //     return BadRequest(ex.Message);
-        // }
+        var _client = new SendGridClient(_configuration["EmailSettings:ApiKey"]);
+        var from = new EmailAddress(_configuration["EmailSettings:SenderEmail"],
+                                    _configuration["EmailSettings:SenderName"]);
+        var subject = apiEmail.Title;
+
+        // TODO: get receiver
+
+        var to = new EmailAddress("turoniol29@gmail.com", "Maksym Zaika");
+        var plainTextContent = apiEmail.Body;
+        var htmlContent = "";
+        var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+        return Ok(await _client.SendEmailAsync(msg));
     }
 }
