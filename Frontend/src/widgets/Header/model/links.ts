@@ -7,12 +7,13 @@ export const links: NavLink[] = [
         path: "/students",
         title: "Студенти"
     },
-    {
-        path: "/student/1",
-        title: "moc user"
-    },
+
     {
         path: "/admin",
         title: "Адмінка"
+    },
+    {
+        path: "/statistic",
+        title: "Статистика"
     }
 ];
