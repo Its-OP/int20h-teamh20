@@ -6,7 +6,8 @@ export const useCreateStudent = () => {
     const { request, loading } = useHttp();
 
     const createStudent = async (data: any) => {
-        const res = await request(users + 'student', HTTP_METHOD.POST, data);
+        const res = await request(users + "student", HTTP_METHOD.POST, data);
+
         return res?.success;
     };
 

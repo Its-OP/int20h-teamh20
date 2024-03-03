@@ -7,7 +7,7 @@ import { useAppDispatch } from "../../../App/appStore.ts";
 import { userSlice } from "./authSlice.ts";
 export type authReqType = { username: string; password: string };
 export const useAuth = () => {
-    const { signInUrl, signUpUrl } = urls;
+    const { signInUrl } = urls;
     const [cookies, setCookies, removeCookies] = useCookies(["token"]);
     const dispatch = useAppDispatch();
 
@@ -27,14 +27,19 @@ export const useAuth = () => {
 
     useEffect(() => {
         if (decodedToken) {
-            const name =
-                // @ts-ignore
+            const role =
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 decodedToken[
-                    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+                    "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
                 ];
-            // @ts-ignore
-            const userId = decodedToken["Id"];
-            dispatch(userSlice.actions.login({ userId: parseInt(userId), userName: name }));
+
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            const id = decodedToken["Id"];
+            dispatch(
+                userSlice.actions.login({ userId: parseInt(id), role: role })
+            );
         } else {
             dispatch(userSlice.actions.logout());
         }
@@ -46,11 +51,5 @@ export const useAuth = () => {
         }
     }, [isExpired]);
 
-    const signUp = async (body: authReqType) => {
-        const response = await request(signUpUrl, HTTP_METHOD.POST, body);
-        if (!response.err) {
-            setCookies("token", response.token);
-        }
-    };
-    return { loading, signIn, signUp };
+    return { loading, signIn };
 };

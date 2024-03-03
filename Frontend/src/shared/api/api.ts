@@ -1,17 +1,16 @@
 const baseApiURL = "https://h20-backend.azurewebsites.net/api/";
 
 export const urls = {
-    auctions: `${baseApiURL}auctions/`,
     signInUrl: `${baseApiURL}users/signIn`,
-    signUpUrl: `${baseApiURL}users/signUp`,
 
-    students: `${baseApiURL}students/`,
+    students: `${baseApiURL}students`,
 
     groups: `${baseApiURL}groups`,
+    users: `${baseApiURL}users`,
 
     subject: `${baseApiURL}subjects`,
 
     messages: `${baseApiURL}messages`,
     templatesMessages: `${baseApiURL}messages/templates`,
-    users: `${baseApiURL}users/`
+    activity: `${baseApiURL}activities/`
 };
