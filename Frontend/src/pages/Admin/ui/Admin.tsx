@@ -90,6 +90,24 @@ const Admin: FC = () => {
                                 </Space>
                             </Panel>
                         </Collapse>
+                        <Collapse defaultActiveKey={1} style={{ marginTop: 18 }}>
+                            <Panel key={1} header={"Предмети"}>
+                                <Space
+                                    style={{ width: "100%" }}
+                                    direction={"vertical"}
+                                >
+                                    <Button
+                                        onClick={() =>
+                                            showModal(ModalKey.CreateDiscipline)
+                                        }
+                                        style={{ width: "100%" }}
+                                        type={"primary"}
+                                    >
+                                        Створити предмет
+                                    </Button>
+                                </Space>
+                            </Panel>
+                        </Collapse>
                     </Col>
                     <Col xs={6}>
                         <Collapse defaultActiveKey={1}>
@@ -106,15 +124,6 @@ const Admin: FC = () => {
                                         type={"primary"}
                                     >
                                         Створити групу
-                                    </Button>
-                                    <Button
-                                        onClick={() =>
-                                            showModal(ModalKey.CreateDiscipline)
-                                        }
-                                        style={{ width: "100%" }}
-                                        type={"primary"}
-                                    >
-                                        Створити предмет
                                     </Button>
                                 </Space>
                             </Panel>
