@@ -12,5 +12,6 @@ export const urls = {
 
     messages: `${baseApiURL}messages`,
     templatesMessages: `${baseApiURL}messages/templates`,
-    activity: `${baseApiURL}activities/`
+    activity: `${baseApiURL}activities/`,
+    analyticStudent: `${baseApiURL}analytics/student`
 };

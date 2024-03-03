@@ -4,14 +4,62 @@ import { useStudent } from "../../../enteties/student/api/useStudent.ts";
 import { CopiIcon } from "../../../shared/ui/CopiIcon.tsx";
 import { activitiesColumn } from "../model/columns.tsx";
 import { useParams } from "react-router-dom";
+import { usePersonalAnalytic } from "../../../enteties/analytic/usePersonalAnalytic.ts";
+
+import { Line } from "react-chartjs-2";
+
+const ChartComponent: FC<any> = ({ data }) => {
+    // Преобразование данных в формат, который принимает библиотека
+    const chartData = {
+        labels: data.map((item: any) => item.subjectName),
+        datasets: [
+            {
+                label: "Накопленный балл",
+                data: data.map((item: any) => item.cumulativeScore),
+                fill: false,
+                borderColor: "rgba(75, 192, 192, 1)",
+                tension: 0.1
+            },
+            {
+                label: "Максимальный балл",
+                data: data.map((item: any) => item.maxScore),
+                fill: false,
+                borderColor: "rgba(192, 75, 192, 1)",
+                tension: 0.1
+            }
+        ]
+    };
+
+    const options = {
+        scales: {
+            yAxes: [
+                {
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }
+            ]
+        }
+    };
+
+    return (
+        <div>
+            <h2>График баллов</h2>
+            <Line data={chartData} options={options} />
+        </div>
+    );
+};
+
 const PersonalPage: FC = () => {
     const { student, fetchStudent, studentLoading } = useStudent();
-
+    const { scoreAnalytic, attendanceAnalytic, fetchAnalytic, loading } =
+        usePersonalAnalytic();
     const { id } = useParams();
 
     useEffect(() => {
         if (id) {
             fetchStudent(id);
+            fetchAnalytic(id);
         }
     }, []);
 
@@ -60,6 +108,9 @@ const PersonalPage: FC = () => {
                     />
                 </Card>
             </Col>
+            {/*<Col xs={24}>*/}
+            {/*    <ChartComponent data={scoreAnalytic} />*/}
+            {/*</Col>*/}
         </Row>
     );
 };

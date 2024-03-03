@@ -7,10 +7,11 @@ import { Link, useLocation } from "react-router-dom";
 import { UserOutlined, BellOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../App/appStore.ts";
 import { notificationSlice } from "../../../enteties/notification/model/notificationSlice.ts";
+import { userRole } from "../../../features/auth/model/authSlice.ts";
 const HeaderApp: FC = () => {
     const { pathname } = useLocation();
 
-    const { userId } = useAppSelector(state => state.user);
+    const { userId, role } = useAppSelector(state => state.user);
     const { amount } = useAppSelector(state => state.notifications);
 
     const dispatch = useAppDispatch();
@@ -23,11 +24,17 @@ const HeaderApp: FC = () => {
                 theme={"light"}
                 mode={"horizontal"}
             >
-                {links.map(item => (
-                    <MenuItem key={item.path}>
-                        <Link to={item.path}>{item.title}</Link>
-                    </MenuItem>
-                ))}
+                {links.map(item => {
+                    if (!item.roles.includes(role!)) {
+                        return null;
+                    }
+
+                    return (
+                        <MenuItem key={item.path}>
+                            <Link to={item.path}>{item.title}</Link>
+                        </MenuItem>
+                    );
+                })}
             </Menu>
             <Menu theme={"light"} mode={"horizontal"} selectedKeys={[]}>
                 <MenuItem>
@@ -44,13 +51,15 @@ const HeaderApp: FC = () => {
                         </Button>
                     </Badge>
                 </MenuItem>
-                <MenuItem>
-                    <Link to={"/student/" + userId}>
-                        <Button type={"primary"}>
-                            <UserOutlined />
-                        </Button>
-                    </Link>
-                </MenuItem>
+                {role === userRole.Student && (
+                    <MenuItem>
+                        <Link to={"/student/" + userId}>
+                            <Button type={"primary"}>
+                                <UserOutlined />
+                            </Button>
+                        </Link>
+                    </MenuItem>
+                )}
             </Menu>
         </Header>
     );
