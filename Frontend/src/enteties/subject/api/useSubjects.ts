@@ -9,8 +9,9 @@ export const useSubjects = () => {
     const { request, loading } = useHttp();
     const [subjects, setSubjects] = useState<Subject[]>([]);
 
-    const fetchSubjects = async () => {
-        const res = await request(subjectsUrl);
+    const fetchSubjects = async (id?: number) => {
+        const siffix = id ? `/${id}` : "";
+        const res = await request(subjectsUrl + siffix);
 
         if (res) {
             setSubjects(res);

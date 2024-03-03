@@ -5,6 +5,7 @@ import CreateGroup from "../../../features/createGroup/ui/CreateGroup.tsx";
 import CreateActivityType from "../../../features/createActivityType/ui/CreateActivityType.tsx";
 import { CreateNotification } from "../../../features/createNotification";
 import CreateProfessor from "../../../features/createProfessor/ui/CreateProfessor.tsx";
+import CreateActivity from "../../../features/createActivity/ui/CreateActivity.tsx";
 
 export enum ModalKey {
     Defult,
@@ -48,7 +49,10 @@ const Admin: FC = () => {
                                 </Space>
                             </Panel>
                         </Collapse>
-                        <Collapse defaultActiveKey={1} style={{ marginTop: 18 }}>
+                        <Collapse
+                            defaultActiveKey={1}
+                            style={{ marginTop: 18 }}
+                        >
                             <Panel key={1} header={"Викладачі"}>
                                 <Space
                                     style={{ width: "100%" }}
@@ -146,6 +150,7 @@ const Admin: FC = () => {
             <CreateGroup open={openModal} hideModal={closeModal} />
             <CreateActivityType open={openModal} hideModal={closeModal} />
             <CreateNotification open={openModal} hideModal={closeModal} />
+            <CreateActivity open={openModal} hideModal={closeModal} />
         </>
     );
 };

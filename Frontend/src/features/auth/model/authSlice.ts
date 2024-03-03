@@ -1,14 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export type UserId = null | number;
-export type UserName = null | number;
+export enum userRole {
+    Professor = "Professor",
+    Student = "Student"
+}
+
 export type UserState = {
     userId: UserId;
-    userName: UserName;
+    role: userRole | null;
 };
 
 const initialState: UserState = {
     userId: null,
-    userName: null
+    role: null
 };
 
 export const userSlice = createSlice({
@@ -17,10 +21,11 @@ export const userSlice = createSlice({
     reducers: {
         login: (state, action: PayloadAction<UserState>) => {
             state.userId = action.payload.userId;
-            state.userName = action.payload.userName;
+            state.role = action.payload.role;
         },
         logout: state => {
             state.userId = null;
+            state.role = null;
         }
     }
 });

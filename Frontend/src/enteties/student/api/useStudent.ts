@@ -10,7 +10,7 @@ export const useStudent = () => {
     const [student, setStudent] = useState<StudentComplete>();
 
     const fetchStudent = async (id: string) => {
-        const res = await request(students + id);
+        const res = await request(students + "/" + id);
 
         setStudent(res);
     };

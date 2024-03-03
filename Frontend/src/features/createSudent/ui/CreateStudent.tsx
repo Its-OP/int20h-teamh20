@@ -90,7 +90,7 @@ const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
                         name={"password"}
                         label={"Пароль"}
                     >
-                        <Input type={"password"} />
+                        <Input type={"mail"} />
                     </Form.Item>
                     <Form.Item
                         rules={[{ required: true }]}

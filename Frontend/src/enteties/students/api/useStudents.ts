@@ -10,7 +10,7 @@ export const useStudents = () => {
     const [students, setStudents] = useState<StudentSimple[]>([]);
 
     const fetchStudents = async (id: number | string) => {
-        const res = await request(`${studentsUrl}group/${id}`);
+        const res = await request(`${studentsUrl}/group/${id}`);
 
         setStudents(res);
     };

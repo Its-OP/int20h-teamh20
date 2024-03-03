@@ -41,7 +41,7 @@ const Auth = () => {
                         style={{ maxWidth: 600 }}
                         initialValues={{ remember: true }}
                         layout={"vertical"}
-                        autoComplete='off'
+                        autoComplete='on'
                     >
                         <Form.Item<FieldType>
                             label='Логін'
