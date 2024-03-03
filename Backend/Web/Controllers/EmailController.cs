@@ -2,25 +2,26 @@
 using System.Linq.Expressions;
 using domain;
 using Microsoft.AspNetCore.Mvc;
+using SendGrid;
 
 namespace backend.Controllers;
 
 [Route("api/email")]
 public class EmailController : ControllerBase
 {
-    private readonly EmailSender _emailSender;
+    private readonly SendGridClient _client;
 
     public EmailController(IConfiguration configuration)
     {
         var server = configuration["SmtpCredentials:Server"];
         var port = configuration["SmtpCredentials:Port"];
         var login = configuration["SmtpCredentials:Login"];
-        var password = configuration["SmtpCredentials:Password"];
+        var key = configuration["SmtpCredentials:ApiKey"];
 
         if (string.IsNullOrEmpty(server) || string.IsNullOrEmpty(port) || string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password))
             throw new Exception("Invalid SMTP Server configuratio.");
 
-        _emailSender = new(server, int.Parse(port), login, password);
+        _client = new SendGridClient(key);
     }
 
     [HttpPost]
