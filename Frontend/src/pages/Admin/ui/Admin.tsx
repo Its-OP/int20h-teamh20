@@ -67,7 +67,7 @@ const Admin: FC = () => {
                     </Col>
                     <Col xs={6}>
                         <Collapse defaultActiveKey={1}>
-                            <Panel key={1} header={"Группи"}>
+                            <Panel key={1} header={"Групи"}>
                                 <Space
                                     style={{ width: "100%" }}
                                     direction={"vertical"}

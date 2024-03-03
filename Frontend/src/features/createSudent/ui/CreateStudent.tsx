@@ -26,7 +26,7 @@ const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
         const res = await createStudent(values);
 
         if (res) {
-            message.success("Студент успішно створено");
+            message.success("Студента успішно додано");
             form.resetFields();
             hideModal();
         } else {
@@ -37,7 +37,7 @@ const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
     return (
         <Modal
             footer={null}
-            title={"Створення студента"}
+            title={"Додати студента"}
             open={visible}
             onCancel={hideModal}
         >
@@ -84,6 +84,13 @@ const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
                         label={"Email"}
                     >
                         <Input type={"mail"} />
+                    </Form.Item>
+                    <Form.Item
+                        rules={[{ required: true }]}
+                        name={"password"}
+                        label={"Пароль"}
+                    >
+                        <Input type={"password"} />
                     </Form.Item>
                     <Form.Item
                         rules={[{ required: true }]}

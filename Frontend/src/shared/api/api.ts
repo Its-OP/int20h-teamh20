@@ -9,5 +9,7 @@ export const urls = {
 
     groups: `${baseApiURL}groups`,
 
-    subject: `${baseApiURL}subjects`
+    subject: `${baseApiURL}subjects`,
+
+    users: `${baseApiURL}users/`,
 };
