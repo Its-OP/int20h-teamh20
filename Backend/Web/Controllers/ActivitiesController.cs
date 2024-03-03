@@ -58,12 +58,6 @@ public class ActivitiesController : ControllerBase
         if (activityType is null)
             return BadRequest(new ErrorContract($"Activity type {activityType} does not exist"));
         
-        if (!DateTime.TryParse(conductedAtISO8601, out var date))
-            return BadRequest(new ErrorContract("Date cannot be parsed"));
-        
-        if (date > DateTime.Now)
-            return BadRequest(new ErrorContract("Activity cannot be performed in the future"));
-        
         if (apiActivities.Count > 50)
             return BadRequest(new ErrorContract("Too many activities"));
 
@@ -79,7 +73,7 @@ public class ActivitiesController : ControllerBase
             var activity = new Activity
             {
                 ActivityType = activityType,
-                ConductedAt = date.RoundToMinutes(),
+                ConductedAt = DateTime.Now.AddDays(-(new Random().Next(1, 100))).RoundToMinutes(),
                 Score = maxScore > apiActivity.Score ? apiActivity.Score : maxScore,
                 MaxScore = maxScore,
                 Student = students[apiActivity.StudentId],
