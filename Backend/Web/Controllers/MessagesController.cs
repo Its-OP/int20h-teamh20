@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace backend.Controllers;
 
 [Route("api/messages")]
-public class MessagesController(IApplicationDbContext context) : ControllerBase
+public class MessageController(IApplicationDbContext context) : ControllerBase
 {
     private readonly IApplicationDbContext _context = context;
 
@@ -21,8 +21,8 @@ public class MessagesController(IApplicationDbContext context) : ControllerBase
 
         messagesCount = Math.Min(messagesCount, 15);
         var messages = await GetMessagesOfStudent(token);
-        return Ok(messages.OrderByDescending(x => x.Id).Take(messagesCount)
-                .Select(x => new MessageContract(x)).ToList());
+        return Ok(messages.OrderByDescending(x => x.IsRead).ThenBy(x => x.CreatedAt)
+                .Take(messagesCount).Select(x => new MessageContract(x)).ToList());
     }
 
     [HttpGet]
@@ -36,8 +36,6 @@ public class MessagesController(IApplicationDbContext context) : ControllerBase
     [Route("")]
     public async Task<IActionResult> CreateMessage([FromBody] MessageParams apiMessage, CancellationToken token)
     {
-        // TODO: template logic
-
         var receiverIds = apiMessage.ReceiverIds.Distinct().ToList();
         var receivers = await _context.Students.Where(x => receiverIds.Contains(x.Id)).ToListAsync(token);
 
@@ -55,9 +53,7 @@ public class MessagesController(IApplicationDbContext context) : ControllerBase
         }
 
         await _context.Messages.AddRangeAsync(messages, token);
-        int count = await _context.SaveChangesAsync(token);
-
-        return Ok(new { Result = count != 0 });
+        return await ResponseOnSaveAsync(token);
     }
 
     [HttpPost]
@@ -66,8 +62,12 @@ public class MessagesController(IApplicationDbContext context) : ControllerBase
     {
         var message = await GetMessageById(messageId, token);
         message.IsRead = true;
-        var count = await _context.SaveChangesAsync(token);
+        return await ResponseOnSaveAsync(token);
+    }
 
+    private async Task<IActionResult> ResponseOnSaveAsync(CancellationToken token)
+    {
+        int count = await _context.SaveChangesAsync(token);
         return Ok(new { Result = count != 0 });
     }
 

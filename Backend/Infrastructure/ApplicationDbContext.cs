@@ -21,6 +21,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Activity> Activities { get; set; }
     public DbSet<ActivityType> ActivityTypes { get; set; }
     public DbSet<NotificationMessage> Messages { get; set; }
+    public DbSet<MessageTemplate> MessageTemplates { get; set; }
     public DbSet<Student> Students { get; set; }
 
 
@@ -75,6 +76,24 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         modelBuilder.Entity<SocialMedias>(entity =>
         {
             entity.HasKey(x => x.Id);
+        });
+
+        modelBuilder.Entity<NotificationMessage>(entity =>
+        {
+            entity.ToTable("Messages");
+
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<MessageTemplate>(entity => 
+        {
+            entity.ToTable("MessageTemplates");
+
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            entity.HasIndex(x => x.Title).IsUnique();
         });
         
         modelBuilder.Entity<Student>(entity =>

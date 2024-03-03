@@ -10,6 +10,7 @@ public interface IApplicationDbContext
     public DbSet<Subject> Subjects { get; }
     public DbSet<Activity> Activities { get; }
     public DbSet<NotificationMessage> Messages { get; }
+    public DbSet<MessageTemplate> MessageTemplates { get; }
     DbSet<ActivityType> ActivityTypes { get; }
     public Task<int> SaveChangesAsync(CancellationToken token);
 }
