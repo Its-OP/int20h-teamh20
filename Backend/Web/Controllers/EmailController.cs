@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using domain;
+using domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -16,8 +17,9 @@ public class EmailMessage
 }
 
 [Route("api/email")]
-public class EmailController(IConfiguration configuration) : ControllerBase
+public class EmailController(IApplicationDbContext context, IConfiguration configuration) : ControllerBase
 {
+    private readonly IApplicationDbContext _dbContext = context;
     private readonly IConfiguration _configuration = configuration;
 
     [HttpPost]
@@ -29,9 +31,12 @@ public class EmailController(IConfiguration configuration) : ControllerBase
                                     _configuration["EmailSettings:SenderName"]);
         var subject = apiEmail.Title;
 
-        // TODO: get receiver
+        var user = _dbContext.Users.SingleOrDefault(x => x.Id == apiEmail.ReceiverId);
 
-        var to = new EmailAddress("turoniol29@gmail.com", "Maksym Zaika");
+        if (user is null)
+            return BadRequest("Invalid receiver id.");
+
+        var to = new EmailAddress(user.Email);
         var plainTextContent = apiEmail.Body;
         var htmlContent = "";
         var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
