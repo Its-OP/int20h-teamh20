@@ -134,7 +134,7 @@ const CreateActivity: FC<ModalData> = ({ open, hideModal }) => {
     return (
         <Modal
             footer={null}
-            title={"Створення групи"}
+            title={"Створення активності"}
             open={visible}
             onCancel={hideModal}
         >
