@@ -172,6 +172,8 @@ const CreateActivity: FC<ModalData> = ({ open, hideModal }) => {
                     >
                         <Select
                             style={{ width: "100%" }}
+                            mode="multiple"
+                            allowClear
                             loading={groupsLoading}
                             options={subjects.map(subj => ({
                                 value: subj.id,
