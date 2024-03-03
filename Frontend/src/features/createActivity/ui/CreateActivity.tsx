@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { ModalData } from "../../../shared/model/adminTypes.ts";
 import {
     Button,
@@ -27,8 +27,7 @@ const CreateActivity: FC<ModalData> = ({ open, hideModal }) => {
     const visible = open === ModalKey.CreateActivity;
     const { groups, fetchGroups, groupsLoading } = useGroups();
     const { createActivity, createActivityLoading } = useCreateActivity();
-    const { students, fetchStudents, studentsLoading, clearStudents } =
-        useStudents();
+    const { students, fetchStudents } = useStudents();
     const { subjects, fetchSubjects } = useSubjects();
     const { activityTypes, fetchActivityTypes } = useActiviesType();
     const [groupId, setGroupId] = useState<number>();
