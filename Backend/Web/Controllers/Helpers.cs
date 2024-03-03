@@ -3,6 +3,8 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using domain;
+using domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
@@ -29,12 +31,13 @@ public static class Helpers
         return Convert.ToHexString(await sha256.ComputeHashAsync(stream, token));
     }
 
-    public static bool UserShouldHaveAccessToStudentData(ClaimsPrincipal user, int studentId)
+    public static async Task<bool> UserShouldHaveAccessToStudentData(ClaimsPrincipal user, int studentId, IApplicationDbContext context)
     {
         if (user.IsInRole(Roles.Professor))
             return true;
 
-        if (int.TryParse(user.FindFirst(nameof(User.Id))?.Value, out var claimedId) && claimedId == studentId)
+        if (int.TryParse(user.FindFirst(nameof(User.Id))?.Value, out var claimedId)
+            && (await context.Students.SingleOrDefaultAsync(x => x.User.Id == claimedId))?.Id  == studentId)
             return true;
 
         return false;

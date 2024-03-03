@@ -23,7 +23,7 @@ public class AnalyticsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<StudentAttendanceContract>))]
     public async Task<IActionResult> GetStudentAttendance([FromRoute] int studentId, CancellationToken token)
     {
-        if (!Helpers.UserShouldHaveAccessToStudentData(User, studentId))
+        if (!await Helpers.UserShouldHaveAccessToStudentData(User, studentId, _dbContext))
             return Unauthorized(new ErrorContract());
         
         if (!await _dbContext.Students.AnyAsync(x => x.Id == studentId, token))
@@ -43,7 +43,7 @@ public class AnalyticsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<StudentScoresContract>))]
     public async Task<IActionResult> GetStudentScores([FromRoute] int studentId, CancellationToken token)
     {
-        if (!Helpers.UserShouldHaveAccessToStudentData(User, studentId))
+        if (!await Helpers.UserShouldHaveAccessToStudentData(User, studentId, _dbContext))
             return Unauthorized(new ErrorContract());
         
         if (!await _dbContext.Students.AnyAsync(x => x.Id == studentId, token))

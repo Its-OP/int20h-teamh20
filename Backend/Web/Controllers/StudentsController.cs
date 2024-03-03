@@ -33,16 +33,16 @@ public class StudentsController(IApplicationDbContext context) : ControllerBase
     }
 
     [HttpGet]
-    [Route("{studentId:int}")]
+    [Route("{userId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudentContract))]
-    public async Task<IActionResult> GetStudent([FromRoute] int studentId, CancellationToken token)
+    public async Task<IActionResult> GetStudent([FromRoute] int userId, CancellationToken token)
     {
-        if (!Helpers.UserShouldHaveAccessToStudentData(User, studentId))
+        if (User.IsInRole(Roles.Student) && Helpers.GetUserId(User) != userId)
             return Unauthorized(new ErrorContract());
         
-        var student = await _context.Students.Include(x => x.Activities).SingleOrDefaultAsync(x => x.Id == studentId, token);
+        var student = await _context.Students.Include(x => x.Activities).SingleOrDefaultAsync(x => x.User.Id == userId, token);
         if (student is null)
-            return BadRequest(new ErrorContract($"Student {studentId} does not exist."));
+            return BadRequest(new ErrorContract($"Student {userId} does not exist."));
 
         return Ok(new StudentContract(student));
     }
@@ -52,7 +52,7 @@ public class StudentsController(IApplicationDbContext context) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudentContract))]
     public async Task<IActionResult> UpdateSocialMedia([FromRoute] int studentId, [FromBody] SocialMedias media, CancellationToken token)
     {
-        if (!Helpers.UserShouldHaveAccessToStudentData(User, studentId))
+        if (! await Helpers.UserShouldHaveAccessToStudentData(User, studentId, _context))
             return Unauthorized(new ErrorContract());
         
         var student = await _context.Students.Include(x => x.Activities).SingleOrDefaultAsync(x => x.Id == studentId, token);

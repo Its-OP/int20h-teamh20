@@ -29,9 +29,9 @@ const PersonalPage: FC = () => {
             <Col lg={12} xs={24}>
                 <Card title={"Персональна інформація"}>
                     <Typography.Title level={5}>Група</Typography.Title>
-                    <Typography.Text>{student.subject}</Typography.Text>
+                    <Typography.Text>{student.groupCode}</Typography.Text>
                     <Divider />
-                    <Typography.Title level={5}>Контаки</Typography.Title>
+                    <Typography.Title level={5}>Контакти</Typography.Title>
                     <Typography>
                         <span style={{ width: "20%" }}>Номер телефону:</span>
                         <span style={{ marginLeft: 20 }}>

@@ -46,8 +46,8 @@ public class GroupsController : ControllerBase
         var query = _dbContext.Groups.AsQueryable();
         if (User.IsInRole(Roles.Student))
         {
-            var studentId = Helpers.GetUserId(User);
-            query = query.Where(x => x.Students.Any(s => s.Id == studentId));
+            var userId = Helpers.GetUserId(User);
+            query = query.Where(x => x.Students.Any(s => s.User.Id == userId));
         }
             
         var groups = await query.Select(x => new GroupContract(x)).ToListAsync(token);

@@ -32,7 +32,9 @@ export const useAuth = () => {
                 decodedToken[
                     "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
                 ];
-            dispatch(userSlice.actions.login({ userId: 1, userName: name }));
+            // @ts-ignore
+            const userId = decodedToken["Id"];
+            dispatch(userSlice.actions.login({ userId: parseInt(userId), userName: name }));
         } else {
             dispatch(userSlice.actions.logout());
         }

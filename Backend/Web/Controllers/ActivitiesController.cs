@@ -102,7 +102,7 @@ public class ActivitiesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ActivityContract>))]
     public async Task<IActionResult> GetActivities([FromRoute] int studentId, [FromRoute] int subjectId, CancellationToken token)
     {
-        if (!Helpers.UserShouldHaveAccessToStudentData(User, studentId))
+        if (!await Helpers.UserShouldHaveAccessToStudentData(User, studentId, _dbContext))
             return Unauthorized(new ErrorContract());
         
         var activities = await _dbContext.Activities.Where(x => x.Student.Id == studentId && x.Subject.Id == subjectId).ToListAsync(token);
