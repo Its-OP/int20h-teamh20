@@ -31,4 +31,21 @@ public class AnalyticsController : ControllerBase
 
         return Ok(activities);
     }
+    
+    [HttpGet]
+    [Route("student/{studentId:int}/scores")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<StudentScoresContract>))]
+    public async Task<IActionResult> GetStudentScores([FromRoute] int studentId, CancellationToken token)
+    {
+        if (!await _dbContext.Students.AnyAsync(x => x.Id == studentId, token))
+            return BadRequest(new ErrorContract($"Student {studentId} not found"));
+
+        var activities = await _dbContext.Activities
+            .Where(x => x.Student.Id == studentId)
+            .GroupBy(x => x.Subject.Title)
+            .Select(x => new StudentScoresContract(x.Key, x.Sum(a => a.Score), x.Sum(a => a.MaxScore)))
+            .ToListAsync(token);
+
+        return Ok(activities);
+    }
 }
