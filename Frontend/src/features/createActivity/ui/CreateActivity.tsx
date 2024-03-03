@@ -167,13 +167,11 @@ const CreateActivity: FC<ModalData> = ({ open, hideModal }) => {
                 <div style={{ display: "flex", gap: 40 }}>
                     <Form.Item
                         style={{ width: "100%" }}
-                        name={"subjectIds"}
-                        label={"Предмети"}
+                        name={"subjectId"}
+                        label={"Предмет"}
                     >
                         <Select
                             style={{ width: "100%" }}
-                            mode='multiple'
-                            allowClear
                             loading={groupsLoading}
                             options={subjects.map(subj => ({
                                 value: subj.id,
