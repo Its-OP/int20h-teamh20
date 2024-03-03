@@ -34,6 +34,7 @@ export interface StudentComplete extends PIB {
     email: string;
     Activities: Activity[];
     subject: string;
+    groupCode: string;
 }
 
 export interface Group {
