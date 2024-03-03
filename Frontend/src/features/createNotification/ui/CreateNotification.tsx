@@ -127,7 +127,7 @@ const CreateNotification: FC<ModalData> = ({ open, hideModal }) => {
                     }))}
                     onChange={setGroup}
                     value={group}
-                    placeholder={"Группа"}
+                    placeholder={"Група"}
                     style={{ minWidth: 200 }}
                     loading={groupsLoading}
                     allowClear

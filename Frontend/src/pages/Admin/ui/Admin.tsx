@@ -101,7 +101,7 @@ const Admin: FC = () => {
                                         style={{ width: "100%" }}
                                         type={"primary"}
                                     >
-                                        Створити группу
+                                        Створити групу
                                     </Button>
                                     <Button
                                         onClick={() =>
