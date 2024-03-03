@@ -24,7 +24,7 @@ public class EmailController(IConfiguration configuration) : ControllerBase
     [Route("")]
     public async Task<IActionResult> SendEmail([FromBody] EmailMessage apiEmail)
     {
-        var _client = new SendGridClient(_configuration["EmailSettings:ApiKey"]);
+        var client = new SendGridClient(_configuration["EmailSettings:ApiKey"]);
         var from = new EmailAddress(_configuration["EmailSettings:SenderEmail"],
                                     _configuration["EmailSettings:SenderName"]);
         var subject = apiEmail.Title;
@@ -35,6 +35,6 @@ public class EmailController(IConfiguration configuration) : ControllerBase
         var plainTextContent = apiEmail.Body;
         var htmlContent = "";
         var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-        return Ok(await _client.SendEmailAsync(msg));
+        return Ok(await client.SendEmailAsync(msg));
     }
 }
