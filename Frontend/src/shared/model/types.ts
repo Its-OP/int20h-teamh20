@@ -41,3 +41,16 @@ export interface Group {
     id: number;
     subjects: Subject[];
 }
+export interface Notification {
+    id: number;
+    title: string;
+    text: string;
+    authorId: number;
+    sentAt: string;
+    isRead: boolean;
+}
+export interface TemplateNotification {
+    id: number;
+    title: string;
+    text: string;
+}

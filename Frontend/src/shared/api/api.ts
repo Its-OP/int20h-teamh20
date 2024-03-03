@@ -11,5 +11,7 @@ export const urls = {
 
     subject: `${baseApiURL}subjects`,
 
-    users: `${baseApiURL}users/`,
+    messages: `${baseApiURL}messages`,
+    templatesMessages: `${baseApiURL}messages/templates`,
+    users: `${baseApiURL}users/`
 };

@@ -3,13 +3,15 @@ import { Button, Card, Col, Collapse, Row, Space, Typography } from "antd";
 import { CreateStudent } from "../../../features/createSudent";
 import CreateGroup from "../../../features/createGroup/ui/CreateGroup.tsx";
 import CreateActivityType from "../../../features/createActivityType/ui/CreateActivityType.tsx";
+import { CreateNotification } from "../../../features/createNotification";
 
 export enum ModalKey {
     Defult,
     CreateStudent,
     CreateActivity,
     CreateGroup,
-    CreateDiscipline
+    CreateDiscipline,
+    CreateNotification
 }
 
 const { Panel } = Collapse;
@@ -94,11 +96,35 @@ const Admin: FC = () => {
                             </Panel>
                         </Collapse>
                     </Col>
+
+                    <Col xs={6}>
+                        <Collapse defaultActiveKey={1}>
+                            <Panel key={1} header={"Повідомлення"}>
+                                <Space
+                                    style={{ width: "100%" }}
+                                    direction={"vertical"}
+                                >
+                                    <Button
+                                        onClick={() =>
+                                            showModal(
+                                                ModalKey.CreateNotification
+                                            )
+                                        }
+                                        style={{ width: "100%" }}
+                                        type={"primary"}
+                                    >
+                                        Створити розсилку
+                                    </Button>
+                                </Space>
+                            </Panel>
+                        </Collapse>
+                    </Col>
                 </Row>
             </Card>
             <CreateStudent open={openModal} hideModal={closeModal} />
             <CreateGroup open={openModal} hideModal={closeModal} />
             <CreateActivityType open={openModal} hideModal={closeModal} />
+            <CreateNotification open={openModal} hideModal={closeModal} />
         </>
     );
 };
