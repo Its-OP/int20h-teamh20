@@ -48,4 +48,52 @@ public class AnalyticsController : ControllerBase
 
         return Ok(activities);
     }
+
+    [HttpGet]
+    [Route("group/{groupId:int}/subject/{subjectId:int}/attendance")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<StudentScoresContract>))]
+    public async Task<IActionResult> GetGroupAttendance([FromRoute] int groupId, [FromRoute] int subjectId, CancellationToken token)
+    {
+        if (!await _dbContext.Groups.AnyAsync(x => x.Id == groupId, token))
+            return BadRequest(new ErrorContract($"Group {groupId} not found"));
+        
+        if (!await _dbContext.Subjects.AnyAsync(x => x.Id == subjectId, token))
+            return BadRequest(new ErrorContract($"Subject {subjectId} not found"));
+    
+        var query = _dbContext.Activities
+            .Where(x => x.Subject.Id == subjectId)
+            .Where(x => x.Student.Group.Id == groupId)
+            .GroupBy(x => x.ConductedAt);
+    
+        var count = (await query.FirstAsync(token)).Count();
+        var activities = await query
+            .Select(x => new GroupAttendanceContract(x.Key.ToString("s"), x.Count(a => a.StudentWasPresent), count))
+            .ToListAsync(token);
+    
+        return Ok(activities);
+    }
+    
+    [HttpGet]
+    [Route("group/{groupId:int}/subject/{subjectId:int}/scores")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<StudentScoresContract>))]
+    public async Task<IActionResult> GetGroupScores([FromRoute] int groupId, [FromRoute] int subjectId, CancellationToken token)
+    {
+        if (!await _dbContext.Groups.AnyAsync(x => x.Id == groupId, token))
+            return BadRequest(new ErrorContract($"Group {groupId} not found"));
+        
+        if (!await _dbContext.Subjects.AnyAsync(x => x.Id == subjectId, token))
+            return BadRequest(new ErrorContract($"Subject {subjectId} not found"));
+
+        var query = _dbContext.Activities
+            .Where(x => x.Subject.Id == subjectId)
+            .Where(x => x.Student.Group.Id == groupId)
+            .GroupBy(x => x.Student.Id);
+
+        var maxScore = (await query.FirstAsync(token)).Sum(x => x.MaxScore);
+        var activities =  await query
+            .Select(x => new GroupScoresContract(x.Key, x.Sum(a => a.Score), maxScore))
+            .ToListAsync(token);
+        
+        return Ok(activities);
+    }
 }
