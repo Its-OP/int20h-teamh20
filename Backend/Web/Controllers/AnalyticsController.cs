@@ -59,15 +59,12 @@ public class AnalyticsController : ControllerBase
         
         if (!await _dbContext.Subjects.AnyAsync(x => x.Id == subjectId, token))
             return BadRequest(new ErrorContract($"Subject {subjectId} not found"));
-    
-        var query = _dbContext.Activities
+        
+        var activities = await _dbContext.Activities
             .Where(x => x.Subject.Id == subjectId)
             .Where(x => x.Student.Group.Id == groupId)
-            .GroupBy(x => x.ConductedAt);
-    
-        var count = (await query.FirstAsync(token)).Count();
-        var activities = await query
-            .Select(x => new GroupAttendanceContract(x.Key.ToString("s"), x.Count(a => a.StudentWasPresent), count))
+            .GroupBy(x => x.ConductedAt)
+            .Select(x => new GroupAttendanceContract(x.Key.ToString("s"), x.Count(a => a.StudentWasPresent), x.Count()))
             .ToListAsync(token);
     
         return Ok(activities);
@@ -83,15 +80,12 @@ public class AnalyticsController : ControllerBase
         
         if (!await _dbContext.Subjects.AnyAsync(x => x.Id == subjectId, token))
             return BadRequest(new ErrorContract($"Subject {subjectId} not found"));
-
-        var query = _dbContext.Activities
+        
+        var activities =  await _dbContext.Activities
             .Where(x => x.Subject.Id == subjectId)
             .Where(x => x.Student.Group.Id == groupId)
-            .GroupBy(x => x.Student.Id);
-
-        var maxScore = (await query.FirstAsync(token)).Sum(x => x.MaxScore);
-        var activities =  await query
-            .Select(x => new GroupScoresContract(x.Key, x.Sum(a => a.Score), maxScore))
+            .GroupBy(x => x.Student.Id)
+            .Select(x => new GroupScoresContract(x.Key, x.Sum(a => a.Score), x.Sum(a => a.MaxScore)))
             .ToListAsync(token);
         
         return Ok(activities);
