@@ -41,4 +41,13 @@ public class SubjectsController : ControllerBase
         var subjects = await _dbContext.Subjects.ToListAsync(token);
         return Ok(subjects.Select(x => new SubjectContract { IsExam = x.HasExam, Title = x.Title, Id = x.Id }));
     }
+    
+    [HttpGet]
+    [Route("{groupId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SubjectContract>))]
+    public async Task<IActionResult> GetSubjectsByGroup([FromRoute] int groupId, CancellationToken token)
+    {
+        var subjects = await _dbContext.Groups.Where(x => x.Id == groupId).SelectMany(x => x.Subjects).ToListAsync(token);
+        return Ok(subjects.Select(x => new SubjectContract { IsExam = x.HasExam, Title = x.Title, Id = x.Id }));
+    }
 }
