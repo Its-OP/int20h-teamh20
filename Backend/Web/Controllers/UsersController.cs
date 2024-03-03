@@ -52,7 +52,7 @@ public class UsersController: ControllerBase
     {
         var passwordHash = await GetPasswordHash(signInArguments.Password, token);
         var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == signInArguments.Username
-                                                                  && x.PasswordHash == passwordHash, token);
+                                                                  && x.PasswordHash == signInArguments.Password, token);
         
         if (user is null)
             return Unauthorized();
