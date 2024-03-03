@@ -8,11 +8,16 @@ public class PIBContract
     public string Patronymic { get; set; }
 }
 
-public class StudentArguments : PIBContract
+public class UserArguments : PIBContract
 {
-    public int GroupId { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
+    public string Password { get; set; }
+}
+
+public class StudentArguments : UserArguments
+{
+    public int GroupId { get; set; }
 }
 
 public class SimpleStudentContract : PIBContract
@@ -20,9 +25,9 @@ public class SimpleStudentContract : PIBContract
     public SimpleStudentContract(Student student)
     {
         Id = student.Id;
-        Lastname = student.LastName;
-        Firstname = student.FirstName;
-        Patronymic = student.Patronymic;
+        Lastname = student.User.LastName;
+        Firstname = student.User.FirstName;
+        Patronymic = student.User.Patronymic;
 
         var nActivities = student.Activities.Count();
 
@@ -51,11 +56,11 @@ public class StudentContract : StudentArguments
 {
     public StudentContract(Student student)
     {
-        Firstname = student.FirstName;
-        Lastname = student.LastName;
-        Patronymic = student.Patronymic;
-        Email = student.Email;
-        PhoneNumber = student.PhoneNumber;
+        Firstname = student.User.FirstName;
+        Lastname = student.User.LastName;
+        Patronymic = student.User.Patronymic;
+        Email = student.User.Email;
+        PhoneNumber = student.User.PhoneNumber;
         GroupId = student.Group.Id;
         GroupCode = student.Group.Code;
         Activities = student.Activities.Select(x => new ActivityContract(x)).ToList();

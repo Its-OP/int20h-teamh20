@@ -1,11 +1,13 @@
 ﻿using backend.ApiContracts;
 using domain;
 using domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Authorize]
 [Route("api/subjects")]
 public class SubjectsController : ControllerBase
 {
@@ -15,7 +17,8 @@ public class SubjectsController : ControllerBase
     {
         _dbContext = dbContext;
     }
-
+    
+    [Authorize(Roles = Roles.Professor)]
     [HttpPost]
     [Route("")]
     public async Task<IActionResult> CreateSubject([FromBody] SubjectArguments apiSubject, CancellationToken token)

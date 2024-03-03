@@ -1,11 +1,13 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using domain;
 using domain.Interfaces;
 using infrastructure;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Helpers = backend.Controllers.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +77,20 @@ app.UseSwaggerUI();
 await using var scope = app.Services.CreateAsyncScope();
 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 await context.Database.MigrateAsync();
+
+if (!await context.Users.AnyAsync())
+{
+    var user = new User("default",
+        "default",
+        "default",
+        "default",
+        "admin@admin.com",
+        await Helpers.GetPasswordHash("default", CancellationToken.None),
+        Roles.Professor);
+
+    await context.Users.AddAsync(user);
+    await context.SaveChangesAsync();
+}
 
 app.UseResponseCaching();
 app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());

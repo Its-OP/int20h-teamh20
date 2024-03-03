@@ -21,7 +21,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Activity> Activities { get; set; }
     public DbSet<ActivityType> ActivityTypes { get; set; }
     public DbSet<NotificationMessage> Messages { get; set; }
+    public DbSet<MessageTemplate> MessageTemplates { get; set; }
     public DbSet<Student> Students { get; set; }
+    public DbSet<Professor> Professors { get; set; }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -39,8 +41,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            entity.HasIndex(x => x.Username).IsUnique();
-            entity.HasIndex(x => new { x.Username, x.PasswordHash });
+            entity.HasIndex(x => x.Email).IsUnique();
+            entity.HasIndex(x => x.PhoneNumber).IsUnique();
+            entity.HasIndex(x => new { x.Email, x.PasswordHash });
         });
         
         modelBuilder.Entity<Group>(entity =>
@@ -76,6 +79,24 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         {
             entity.HasKey(x => x.Id);
         });
+
+        modelBuilder.Entity<NotificationMessage>(entity =>
+        {
+            entity.ToTable("Messages");
+
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<MessageTemplate>(entity => 
+        {
+            entity.ToTable("MessageTemplates");
+
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            entity.HasIndex(x => x.Title).IsUnique();
+        });
         
         modelBuilder.Entity<Student>(entity =>
         {
@@ -84,10 +105,19 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            entity.HasIndex(x => x.PhoneNumber).IsUnique();
-            entity.HasIndex(x => x.Email).IsUnique();
+            entity.HasOne(x => x.User).WithOne().HasForeignKey<Student>(x => x.UserId);
 
             entity.HasOne(x => x.SocialMedias).WithOne().HasForeignKey<SocialMedias>(x => x.StudentId);
+        });
+        
+        modelBuilder.Entity<Professor>(entity =>
+        {
+            entity.ToTable("Professors");
+            
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            entity.HasOne(x => x.User).WithOne().HasForeignKey<Professor>(x => x.UserId);
         });
 
         modelBuilder.Entity<ActivityType>(entity =>

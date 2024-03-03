@@ -2,7 +2,7 @@
 
 public class ErrorContract
 {
-    public ErrorContract(string message)
+    public ErrorContract(string message = "")
     {
         Message = message;
     }

@@ -1,5 +1,8 @@
 using System.Net;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using domain;
 
 namespace backend.Controllers;
 
@@ -15,5 +18,33 @@ public static class Helpers
     public static int GetUserID(this ClaimsPrincipal principal)
     {
         return int.Parse(principal.Claims.Single(c => c.Type == ClaimTypes.NameIdentifier).Value);
+    }
+    
+    public static async Task<string> GetPasswordHash(string password, CancellationToken token)
+    {
+        using var sha256 = SHA256.Create();
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
+        using var stream = new MemoryStream(passwordBytes);
+
+        return Convert.ToHexString(await sha256.ComputeHashAsync(stream, token));
+    }
+
+    public static bool UserShouldHaveAccessToStudentData(ClaimsPrincipal user, int studentId)
+    {
+        if (user.IsInRole(Roles.Professor))
+            return true;
+
+        if (int.TryParse(user.FindFirst(nameof(User.Id))?.Value, out var claimedId) && claimedId == studentId)
+            return true;
+
+        return false;
+    }
+    
+    public static int? GetUserId(ClaimsPrincipal user)
+    {
+        if (int.TryParse(user.FindFirst(nameof(User.Id))?.Value, out var claimedId))
+            return claimedId;
+
+        return null;
     }
 }
