@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
-[Authorize(Roles = Roles.Professor)]
 [Route("api/activities")]
 public class ActivitiesController : ControllerBase
 {
@@ -73,7 +72,7 @@ public class ActivitiesController : ControllerBase
             var activity = new Activity
             {
                 ActivityType = activityType,
-                ConductedAt = DateTime.Now.AddDays(-(new Random().Next(1, 100))).RoundToMinutes(),
+                ConductedAt = DateTime.UtcNow.AddDays(-(new Random().Next(1, 100))).RoundToMinutes(),
                 Score = maxScore > apiActivity.Score ? apiActivity.Score : maxScore,
                 MaxScore = maxScore,
                 Student = students[apiActivity.StudentId],
