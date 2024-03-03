@@ -1,11 +1,13 @@
 ﻿using backend.ApiContracts;
 using domain;
 using domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Authorize]
 [Route("api/students")]
 public class StudentsController(IApplicationDbContext context) : ControllerBase
 {
@@ -15,56 +17,32 @@ public class StudentsController(IApplicationDbContext context) : ControllerBase
     [Route("group/{groupId:int}")]
     public async Task<IActionResult> GetStudents([FromRoute] int groupId, CancellationToken token)
     {
-        var group = await _context.Groups.Include(x => x.Students).SingleOrDefaultAsync(x => x.Id == groupId, token);
+        var query = _context.Groups.Include(x => x.Students).AsQueryable();
+        if (User.IsInRole(Roles.Student))
+        {
+            var studentId = Helpers.GetUserId(User);
+            query = query.Where(x => x.Students.Any(s => s.Id == studentId));
+        }
+        
+        var group = await query.SingleOrDefaultAsync(x => x.Id == groupId, token);
 
         if (group is null)
-            return BadRequest(new ErrorContract($"Group with id '{groupId}' does not exist."));
+            return BadRequest(new ErrorContract($"Group with id '{groupId}' does not exist or the user does not have permissions to access it."));
 
         return Ok(group.Students.Select(x => new SimpleStudentContract(x)).ToList());
     }
 
-    [HttpPost]
-    [Route("")]
-    public async Task<IActionResult> CreateStudent(
-        [FromBody] StudentArguments apiStudent,
-        CancellationToken token
-    )
-    {
-        var group = await _context.Groups.SingleOrDefaultAsync(x => x.Id == apiStudent.GroupId, token);
-
-        if (group is null)
-            return BadRequest(new ErrorContract($"Group with id '{apiStudent.GroupId}' does not exist."));
-
-        if (await _context.Students.AnyAsync(x => x.Email == apiStudent.Email, token))
-            return BadRequest(new ErrorContract($"Student with email '{apiStudent.Email}' already exists."));
-
-        if (await _context.Students.AnyAsync(x => x.PhoneNumber == apiStudent.PhoneNumber, token))
-            return BadRequest(new ErrorContract($"Student with number '{apiStudent.PhoneNumber} already exists."));
-
-        var student = new Student
-        {
-            Group = group,
-            FirstName = apiStudent.Firstname,
-            LastName = apiStudent.Lastname,
-            Patronymic = apiStudent.Patronymic,
-            PhoneNumber = apiStudent.PhoneNumber,
-            Email = apiStudent.Email,
-        };
-
-        await _context.Students.AddAsync(student, token);
-        await _context.SaveChangesAsync(token);
-
-        return Ok(new NoContentContract());
-    }
-
     [HttpGet]
-    [Route("{studentId:int}")]
+    [Route("{userId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudentContract))]
-    public async Task<IActionResult> GetStudent([FromRoute] int studentId, CancellationToken token)
+    public async Task<IActionResult> GetStudent([FromRoute] int userId, CancellationToken token)
     {
-        var student = await _context.Students.Include(x => x.Activities).SingleOrDefaultAsync(x => x.Id == studentId, token);
+        if (User.IsInRole(Roles.Student) && Helpers.GetUserId(User) != userId)
+            return Unauthorized(new ErrorContract());
+        
+        var student = await _context.Students.Include(x => x.Activities).SingleOrDefaultAsync(x => x.User.Id == userId, token);
         if (student is null)
-            return BadRequest(new ErrorContract($"Student {studentId} does not exist."));
+            return BadRequest(new ErrorContract($"Student {userId} does not exist."));
 
         return Ok(new StudentContract(student));
     }
@@ -74,6 +52,9 @@ public class StudentsController(IApplicationDbContext context) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudentContract))]
     public async Task<IActionResult> UpdateSocialMedia([FromRoute] int studentId, [FromBody] SocialMedias media, CancellationToken token)
     {
+        if (! await Helpers.UserShouldHaveAccessToStudentData(User, studentId, _context))
+            return Unauthorized(new ErrorContract());
+        
         var student = await _context.Students.Include(x => x.Activities).SingleOrDefaultAsync(x => x.Id == studentId, token);
         if (student is null)
             return BadRequest(new ErrorContract($"Student {studentId} does not exist."));

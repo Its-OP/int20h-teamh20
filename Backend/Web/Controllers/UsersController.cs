@@ -5,12 +5,14 @@ using System.Text;
 using backend.ApiContracts;
 using domain;
 using domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Controllers;
 
+[Authorize(Roles = Roles.Professor)]
 [ApiController]
 [Route("api/users")]
 public class UsersController: ControllerBase
@@ -25,38 +27,84 @@ public class UsersController: ControllerBase
     }
     
     [HttpPost]
-    [Route("signUp")]
-    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(SignUpErrorCodes))]
-    public async Task<IActionResult> SignUp([FromBody] SignUpArguments signUpArguments, CancellationToken token)
+    [Route("student")]
+    public async Task<IActionResult> CreateStudent(
+        [FromBody] StudentArguments apiStudent,
+        CancellationToken token
+    )
     {
-        if (await _context.Users.AnyAsync(x => x.Username == signUpArguments.Username, token))
-            return BadRequest(new ErrorContract(SignUpErrorCodes.UserAlreadyExists.ToString()));
+        var group = await _context.Groups.SingleOrDefaultAsync(x => x.Id == apiStudent.GroupId, token);
+
+        if (group is null)
+            return BadRequest(new ErrorContract($"Group with id '{apiStudent.GroupId}' does not exist."));
+
+        if (await _context.Users.AnyAsync(x => x.Email == apiStudent.Email, token))
+            return BadRequest(new ErrorContract($"User with email '{apiStudent.Email}' already exists."));
+
+        if (await _context.Users.AnyAsync(x => x.PhoneNumber == apiStudent.PhoneNumber, token))
+            return BadRequest(new ErrorContract($"User with number '{apiStudent.PhoneNumber} already exists."));
+
+        var user = new User(apiStudent.Firstname,
+            apiStudent.Lastname,
+            apiStudent.Patronymic,
+            apiStudent.PhoneNumber,
+            apiStudent.Email,
+            await Helpers.GetPasswordHash(apiStudent.Password, token),
+            Roles.Student);
         
-        if (signUpArguments.Password.Length < 6)
-            return BadRequest(new ErrorContract(SignUpErrorCodes.PasswordTooSimple.ToString()));
-        
-        if (signUpArguments.Password.Length > 16)
-            return BadRequest(new ErrorContract(SignUpErrorCodes.PasswordTooLong.ToString()));
-        
-        var user = new User(signUpArguments.Username, await GetPasswordHash(signUpArguments.Password, token));
+        var student = new Student
+        {
+            Group = group,
+            User = user
+        };
 
         await _context.Users.AddAsync(user, token);
+        await _context.Students.AddAsync(student, token);
         await _context.SaveChangesAsync(token);
 
-        return SignInInternal(user);
+        return Ok(new NoContentContract());
     }
     
+    [HttpPost]
+    [Route("professor")]
+    public async Task<IActionResult> CreateProfessor(
+        [FromBody] UserArguments arguments,
+        CancellationToken token
+    )
+    {
+        if (await _context.Users.AnyAsync(x => x.Email == arguments.Email, token))
+            return BadRequest(new ErrorContract($"User with email '{arguments.Email}' already exists."));
+
+        if (await _context.Users.AnyAsync(x => x.PhoneNumber == arguments.PhoneNumber, token))
+            return BadRequest(new ErrorContract($"User with number '{arguments.PhoneNumber} already exists."));
+
+        var user = new User(arguments.Firstname,
+            arguments.Lastname,
+            arguments.Patronymic,
+            arguments.PhoneNumber,
+            arguments.Email,
+            await Helpers.GetPasswordHash(arguments.Password, token),
+            Roles.Professor);
+
+        await _context.Users.AddAsync(user, token);
+        await _context.Professors.AddAsync(new Professor(user), token);
+        await _context.SaveChangesAsync(token);
+
+        return Ok(new NoContentContract());
+    }
+    
+    [AllowAnonymous]
     [HttpPost]
     [Route("signIn")]
     public async Task<IActionResult> SignIn([FromBody] SignInArguments signInArguments, CancellationToken token)
     {
         var passwordHash = await GetPasswordHash(signInArguments.Password, token);
-        var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == signInArguments.Username
-                                                                  && x.PasswordHash == signInArguments.Password, token);
+        var user = await _context.Users.SingleOrDefaultAsync(x => x.Email == signInArguments.Email
+                                                                  && x.PasswordHash == passwordHash, token);
         
         if (user is null)
             return Unauthorized();
-
+    
         return SignInInternal(user);
     }
 
@@ -72,15 +120,16 @@ public class UsersController: ControllerBase
         
         var claims = new List<Claim>
         {
-            new (ClaimTypes.Name, user.Username)
+            new (nameof(user.Id), user.Id.ToString()),
+            new (ClaimTypes.Role, user.Role),
         };
-
+    
         var jwtToken = new JwtSecurityToken(issuer,
             issuer,
             claims,
             expires: DateTime.Now.AddMinutes(120),
             signingCredentials: credentials);
-
+    
         var jwtString = new JwtSecurityTokenHandler().WriteToken(jwtToken);
         return Ok(new { Token = jwtString });
     }

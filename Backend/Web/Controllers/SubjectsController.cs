@@ -1,11 +1,13 @@
 ﻿using backend.ApiContracts;
 using domain;
 using domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Authorize]
 [Route("api/subjects")]
 public class SubjectsController : ControllerBase
 {
@@ -15,7 +17,8 @@ public class SubjectsController : ControllerBase
     {
         _dbContext = dbContext;
     }
-
+    
+    [Authorize(Roles = Roles.Professor)]
     [HttpPost]
     [Route("")]
     public async Task<IActionResult> CreateSubject([FromBody] SubjectArguments apiSubject, CancellationToken token)
@@ -36,6 +39,15 @@ public class SubjectsController : ControllerBase
     public async Task<IActionResult> GetSubjects(CancellationToken token)
     {
         var subjects = await _dbContext.Subjects.ToListAsync(token);
+        return Ok(subjects.Select(x => new SubjectContract { IsExam = x.HasExam, Title = x.Title, Id = x.Id }));
+    }
+    
+    [HttpGet]
+    [Route("{groupId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SubjectContract>))]
+    public async Task<IActionResult> GetSubjectsByGroup([FromRoute] int groupId, CancellationToken token)
+    {
+        var subjects = await _dbContext.Groups.Where(x => x.Id == groupId).SelectMany(x => x.Subjects).ToListAsync(token);
         return Ok(subjects.Select(x => new SubjectContract { IsExam = x.HasExam, Title = x.Title, Id = x.Id }));
     }
 }

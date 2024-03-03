@@ -1,11 +1,13 @@
 ﻿using backend.ApiContracts;
 using domain;
 using domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Authorize(Roles = Roles.Professor)]
 [Route("api/activities")]
 public class ActivitiesController : ControllerBase
 {
@@ -93,12 +95,16 @@ public class ActivitiesController : ControllerBase
 
         return Ok(new NoContentContract());
     }
-
+    
+    [Authorize]
     [HttpGet]
     [Route("student/{studentId:int}/subject/{subjectId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ActivityContract>))]
     public async Task<IActionResult> GetActivities([FromRoute] int studentId, [FromRoute] int subjectId, CancellationToken token)
     {
+        if (!await Helpers.UserShouldHaveAccessToStudentData(User, studentId, _dbContext))
+            return Unauthorized(new ErrorContract());
+        
         var activities = await _dbContext.Activities.Where(x => x.Student.Id == studentId && x.Subject.Id == subjectId).ToListAsync(token);
         var apiActivities = activities.Select(x => new ActivityContract(x));
 

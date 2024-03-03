@@ -1,32 +1,22 @@
-import { FC, useEffect } from "react";
-import { Button, Form, Input, message, Modal, Popconfirm, Select } from "antd";
+import { FC } from "react";
+import { Button, Form, Input, message, Modal, Popconfirm } from "antd";
 import { ModalData } from "../../../shared/model/adminTypes.ts";
 import { ModalKey } from "../../../pages/Admin/ui/Admin.tsx";
-import { useCreateStudent } from "../../../pages/Auth/api/useCreateStudent.ts";
 import { errNotificationMessage } from "../../../shared/model/const.ts";
-import { useGroups } from "../../../enteties/groups/api/useGroups.ts";
+import { useCreateProfessor } from "../../../pages/Auth/api/useCreateProfessor.ts";
 const { useForm } = Form;
 
-const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
-    const visible = open === ModalKey.CreateStudent;
+const CreateProfessor: FC<ModalData> = ({ open, hideModal }) => {
+    const visible = open === ModalKey.CreateProfessor;
     const [form] = useForm();
 
-    const { createUserLoading, createStudent } = useCreateStudent();
-    const { groups, fetchGroups, groupsLoading } = useGroups();
-
-    useEffect(() => {
-        if (visible) {
-            fetchGroups();
-        } else {
-            form.resetFields();
-        }
-    }, [visible]);
+    const { createUserLoading, createProfessor } = useCreateProfessor();
 
     const onFinish = async (values: any) => {
-        const res = await createStudent(values);
+        const res = await createProfessor(values);
 
         if (res) {
-            message.success("Студента успішно додано");
+            message.success("Викладача успішно додано");
             form.resetFields();
             hideModal();
         } else {
@@ -37,7 +27,7 @@ const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
     return (
         <Modal
             footer={null}
-            title={"Додати студента"}
+            title={"Додати викладача"}
             open={visible}
             onCancel={hideModal}
         >
@@ -92,28 +82,15 @@ const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
                     >
                         <Input type={"password"} />
                     </Form.Item>
-                    <Form.Item
-                        rules={[{ required: true }]}
-                        name={"groupId"}
-                        label={"Група"}
-                    >
-                        <Select
-                            options={groups.map(group => ({
-                                value: group.id,
-                                label: group.code
-                            }))}
-                            loading={groupsLoading}
-                        />
-                    </Form.Item>
                 </div>
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <Popconfirm
-                        title={"Ви впевнені що хочете додати студента ?"}
+                        title={"Ви впевнені що хочете додати викладача до системи ?"}
                         onConfirm={form.submit}
                         disabled={createUserLoading}
                     >
                         <Button loading={createUserLoading} type={"primary"}>
-                            Створити
+                            Додати
                         </Button>
                     </Popconfirm>
                 </div>
@@ -121,4 +98,4 @@ const CreateStudent: FC<ModalData> = ({ open, hideModal }) => {
         </Modal>
     );
 };
-export default CreateStudent;
+export default CreateProfessor;
