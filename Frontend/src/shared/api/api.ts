@@ -1,4 +1,4 @@
-const baseApiURL = "https://h20-backend.azurewebsites.net/api/";
+const baseApiURL = "http://localhost:5000/api/"; //"https://h20-backend.azurewebsites.net/api/";
 
 export const urls = {
     auctions: `${baseApiURL}auctions/`,
@@ -9,5 +9,8 @@ export const urls = {
 
     groups: `${baseApiURL}groups`,
 
-    subject: `${baseApiURL}subjects`
+    subject: `${baseApiURL}subjects`,
+
+    messages: `${baseApiURL}messages`,
+    templatesMessages: `${baseApiURL}messages/templates`
 };

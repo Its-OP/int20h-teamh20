@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { HeaderApp } from "../../widgets/Header";
 import { Helmet } from "react-helmet";
 import { BASE_TITLE } from "../../shared/model/const.ts";
+import { Notifications } from "../../widgets/notifications";
 
 const AuthLayout = () => {
     return (
@@ -21,6 +22,7 @@ const AuthLayout = () => {
             >
                 <Outlet />
             </Layout.Content>
+            <Notifications />
         </>
     );
 };
