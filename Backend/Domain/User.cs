@@ -2,14 +2,23 @@
 
 public class User : Entity<int>
 {
-    public User() { }
-    public User(string username, string passwordHash)
+    public User() {}
+    public User(string firstName, string lastName, string patronymic, string phoneNumber, string email, string passwordHash, string role)
     {
-        Username = username;
+        FirstName = firstName;
+        LastName = lastName;
+        Patronymic = patronymic;
+        PhoneNumber = phoneNumber;
+        Email = email;
         PasswordHash = passwordHash;
+        Role = role;
     }
 
-    public string Username { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Patronymic { get; set; }
+    public string PhoneNumber { get; set; }
+    public string Email { get; set; }
     public string PasswordHash { get; set; }
-    public virtual IEnumerable<MessageTemplate> MessageTemplates { get; set; }
+    public string Role { get; set; }
 }

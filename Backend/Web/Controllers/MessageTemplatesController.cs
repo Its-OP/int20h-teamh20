@@ -53,10 +53,10 @@ public class MessageTemplatesController(IApplicationDbContext context) : Control
         return Ok(new { Result = count != 0 });
     }
 
-    private async Task<User> GetCurrentTeacher(CancellationToken token)
+    private async Task<Professor> GetCurrentTeacher(CancellationToken token)
     {
         var id = User.GetUserID();
-        var user = await _context.Users.SingleOrDefaultAsync(x => x.Id == id, token)
+        var user = await _context.Professors.SingleOrDefaultAsync(x => x.User.Id == id, token)
                     ?? throw new BadRequestException("Invalid teacher id.");
         return user;
     }

@@ -5,12 +5,9 @@ public class Student : Entity<int>
     public virtual IEnumerable<Activity> Activities { get; set; } = new List<Activity>();
     public virtual IEnumerable<NotificationMessage> Messages { get; set; } = [];
     public virtual Group Group { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Patronymic { get; set; }
-    public string PhoneNumber { get; set; }
-    public string Email { get; set; }
     public virtual SocialMedias SocialMedias { get; set; } = new();
+    public virtual User User { get; set; }
+    public int UserId { get; set; }
 
     public void UpdateSocialMedia(SocialMedias medias)
     {
