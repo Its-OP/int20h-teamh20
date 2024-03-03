@@ -6,7 +6,7 @@ export const useCreateProfessor = () => {
     const { request, loading } = useHttp();
 
     const createProfessor = async (data: any) => {
-        const res = await request(users + 'professor', HTTP_METHOD.POST, data);
+        const res = await request(users + '/professor', HTTP_METHOD.POST, data);
         return res?.success;
     };
 
