@@ -2,7 +2,7 @@
 
 public class User : Entity<int>
 {
-    public User() {}
+    public User() { }
     public User(string username, string passwordHash)
     {
         Username = username;
@@ -11,4 +11,5 @@ public class User : Entity<int>
 
     public string Username { get; set; }
     public string PasswordHash { get; set; }
+    public virtual IEnumerable<MessageTemplate> MessageTemplates { get; set; }
 }
