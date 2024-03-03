@@ -1,10 +1,13 @@
 ﻿using backend.ApiContracts;
+using domain;
 using domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Authorize]
 [Route("api/analytics")]
 public class AnalyticsController : ControllerBase
 {
@@ -14,12 +17,15 @@ public class AnalyticsController : ControllerBase
     {
         _dbContext = dbContext;
     }
-
+    
     [HttpGet]
     [Route("student/{studentId:int}/attendance")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<StudentAttendanceContract>))]
     public async Task<IActionResult> GetStudentAttendance([FromRoute] int studentId, CancellationToken token)
     {
+        if (!Helpers.UserShouldHaveAccessToStudentData(User, studentId))
+            return Unauthorized(new ErrorContract());
+        
         if (!await _dbContext.Students.AnyAsync(x => x.Id == studentId, token))
             return BadRequest(new ErrorContract($"Student {studentId} not found"));
 
@@ -37,6 +43,9 @@ public class AnalyticsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<StudentScoresContract>))]
     public async Task<IActionResult> GetStudentScores([FromRoute] int studentId, CancellationToken token)
     {
+        if (!Helpers.UserShouldHaveAccessToStudentData(User, studentId))
+            return Unauthorized(new ErrorContract());
+        
         if (!await _dbContext.Students.AnyAsync(x => x.Id == studentId, token))
             return BadRequest(new ErrorContract($"Student {studentId} not found"));
 
@@ -48,7 +57,8 @@ public class AnalyticsController : ControllerBase
 
         return Ok(activities);
     }
-
+    
+    [Authorize(Roles = Roles.Professor)]
     [HttpGet]
     [Route("group/{groupId:int}/subject/{subjectId:int}/attendance")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<StudentScoresContract>))]
@@ -70,6 +80,7 @@ public class AnalyticsController : ControllerBase
         return Ok(activities);
     }
     
+    [Authorize(Roles = Roles.Professor)]
     [HttpGet]
     [Route("group/{groupId:int}/subject/{subjectId:int}/scores")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<StudentScoresContract>))]

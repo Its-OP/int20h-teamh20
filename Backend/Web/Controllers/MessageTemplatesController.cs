@@ -1,12 +1,14 @@
 using backend.ApiContracts;
 using domain;
 using domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Template;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Authorize(Roles = Roles.Professor)]
 [Route("api/messages/templates")]
 public class MessageTemplatesController(IApplicationDbContext context) : ControllerBase
 {
@@ -16,7 +18,7 @@ public class MessageTemplatesController(IApplicationDbContext context) : Control
     [Route("")]
     public async Task<IActionResult> CreateTemplate([FromBody] MessageTemplateParams apiTemplate, CancellationToken token)
     {
-        var templates = await GetTemplatesOfTeacher(token);
+        var templates = await GetTemplatesOfProfessor(token);
 
         if (templates.Any(x => x.Title == apiTemplate.Title))
             return BadRequest("Template with that title already exists.");
@@ -25,7 +27,7 @@ public class MessageTemplatesController(IApplicationDbContext context) : Control
         {
             Title = apiTemplate.Title,
             Text = apiTemplate.Text,
-            Owner = await GetCurrentTeacher(token),
+            Owner = await GetCurrentProfessor(token),
         };
 
         await _context.MessageTemplates.AddAsync(template, token);
@@ -43,7 +45,7 @@ public class MessageTemplatesController(IApplicationDbContext context) : Control
     [Route("")]
     public async Task<IActionResult> GetTemplates(CancellationToken token)
     {
-        var templates = await GetTemplatesOfTeacher(token);
+        var templates = await GetTemplatesOfProfessor(token);
         return Ok(templates.Select(x => new MessageTemplateContract(x)).ToList());
     }
 
@@ -53,23 +55,23 @@ public class MessageTemplatesController(IApplicationDbContext context) : Control
         return Ok(new { Result = count != 0 });
     }
 
-    private async Task<Professor> GetCurrentTeacher(CancellationToken token)
+    private async Task<Professor> GetCurrentProfessor(CancellationToken token)
     {
-        var id = User.GetUserID();
-        var user = await _context.Professors.SingleOrDefaultAsync(x => x.User.Id == id, token)
-                    ?? throw new BadRequestException("Invalid teacher id.");
-        return user;
+        var id = Helpers.GetUserId(User);
+        var professor = await _context.Professors.SingleOrDefaultAsync(x => x.User.Id == id, token)
+                    ?? throw new BadRequestException("Invalid user id.");
+        return professor;
     }
 
-    private async Task<IEnumerable<MessageTemplate>> GetTemplatesOfTeacher(CancellationToken token)
+    private async Task<IEnumerable<MessageTemplate>> GetTemplatesOfProfessor(CancellationToken token)
     {
-        var user = await GetCurrentTeacher(token);
-        return user.MessageTemplates;
+        var professor = await GetCurrentProfessor(token);
+        return professor.MessageTemplates;
     }
 
     private async Task<MessageTemplate> GetTemplateById(int id, CancellationToken token)
     {
-        var messages = await GetTemplatesOfTeacher(token);
+        var messages = await GetTemplatesOfProfessor(token);
         return messages.FirstOrDefault(x => x.Id == id)
                 ?? throw new BadRequestException("Invalid template id.");
     }

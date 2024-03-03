@@ -5,12 +5,14 @@ using System.Text;
 using backend.ApiContracts;
 using domain;
 using domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Controllers;
 
+[Authorize(Roles = Roles.Professor)]
 [ApiController]
 [Route("api/users")]
 public class UsersController: ControllerBase
@@ -91,6 +93,7 @@ public class UsersController: ControllerBase
         return Ok(new NoContentContract());
     }
     
+    [AllowAnonymous]
     [HttpPost]
     [Route("signIn")]
     public async Task<IActionResult> SignIn([FromBody] SignInArguments signInArguments, CancellationToken token)
@@ -118,7 +121,7 @@ public class UsersController: ControllerBase
         var claims = new List<Claim>
         {
             new (nameof(user.Id), user.Id.ToString()),
-            new (nameof(user.Role), user.Role),
+            new (ClaimTypes.Role, user.Role),
         };
     
         var jwtToken = new JwtSecurityToken(issuer,

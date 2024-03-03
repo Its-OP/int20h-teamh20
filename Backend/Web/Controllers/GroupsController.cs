@@ -1,11 +1,13 @@
 ﻿using backend.ApiContracts;
 using domain;
 using domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Authorize]
 [Route("api/groups")]
 public class GroupsController : ControllerBase
 {
@@ -41,7 +43,14 @@ public class GroupsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<GroupContract>))]
     public async Task<IActionResult> GetGroups(CancellationToken token)
     {
-        var groups = await _dbContext.Groups.Select(x => new GroupContract(x)).ToListAsync(token);
+        var query = _dbContext.Groups.AsQueryable();
+        if (User.IsInRole(Roles.Student))
+        {
+            var studentId = Helpers.GetUserId(User);
+            query = query.Where(x => x.Students.Any(s => s.Id == studentId));
+        }
+            
+        var groups = await query.Select(x => new GroupContract(x)).ToListAsync(token);
         return Ok(groups);
     }
 }

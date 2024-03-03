@@ -1,11 +1,13 @@
 using backend.ApiContracts;
 using domain;
 using domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Authorize]
 [Route("api/messages")]
 public class MessageController(IApplicationDbContext context) : ControllerBase
 {
@@ -21,7 +23,7 @@ public class MessageController(IApplicationDbContext context) : ControllerBase
 
         messagesCount = Math.Min(messagesCount, 15);
         var messages = await GetMessagesOfStudent(token);
-        return Ok(messages.OrderByDescending(x => x.IsRead).ThenBy(x => x.CreatedAt)
+        return Ok(messages.OrderByDescending(x => x.IsRead).ThenByDescending(x => x.CreatedAt)
                 .Take(messagesCount).Select(x => new MessageContract(x)).ToList());
     }
 
@@ -73,8 +75,8 @@ public class MessageController(IApplicationDbContext context) : ControllerBase
 
     private async Task<IEnumerable<NotificationMessage>> GetMessagesOfStudent(CancellationToken token)
     {
-        var id = User.GetUserID();
-        var student = await _context.Students.SingleOrDefaultAsync(x => x.Id == id, token)
+        var userId = Helpers.GetUserId(User);
+        var student = await _context.Students.SingleOrDefaultAsync(x => x.User.Id == userId, token)
                     ?? throw new BadRequestException("Invalid student id.");
         return student.Messages;
     }
