@@ -42,7 +42,10 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("Score")
+                    b.Property<int>("MaxScore")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Score")
                         .HasColumnType("integer");
 
                     b.Property<int>("StudentId")
@@ -111,6 +114,38 @@ namespace Infrastructure.Migrations
                     b.ToTable("Groups", (string)null);
                 });
 
+            modelBuilder.Entity("domain.NotificationMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("domain.SocialMedias", b =>
                 {
                     b.Property<Guid>("Id")
@@ -119,26 +154,31 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Facebook")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("GitHub")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("LinkedIn")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<int>("StudentId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Telegram")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Twitter")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
@@ -282,6 +322,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("Subject");
                 });
 
+            modelBuilder.Entity("domain.NotificationMessage", b =>
+                {
+                    b.HasOne("domain.Student", "Receiver")
+                        .WithMany("Messages")
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Receiver");
+                });
+
             modelBuilder.Entity("domain.SocialMedias", b =>
                 {
                     b.HasOne("domain.Student", null)
@@ -319,6 +370,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("domain.Student", b =>
                 {
                     b.Navigation("Activities");
+
+                    b.Navigation("Messages");
 
                     b.Navigation("SocialMedias")
                         .IsRequired();
