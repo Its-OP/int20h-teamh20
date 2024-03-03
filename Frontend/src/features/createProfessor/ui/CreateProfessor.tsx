@@ -1,10 +1,8 @@
-import { FC, useEffect } from "react";
-import { Button, Form, Input, message, Modal, Popconfirm, Select } from "antd";
+import { FC } from "react";
+import { Button, Form, Input, message, Modal, Popconfirm } from "antd";
 import { ModalData } from "../../../shared/model/adminTypes.ts";
 import { ModalKey } from "../../../pages/Admin/ui/Admin.tsx";
-import { useCreateStudent } from "../../../pages/Auth/api/useCreateStudent.ts";
 import { errNotificationMessage } from "../../../shared/model/const.ts";
-import { useGroups } from "../../../enteties/groups/api/useGroups.ts";
 import { useCreateProfessor } from "../../../pages/Auth/api/useCreateProfessor.ts";
 const { useForm } = Form;
 
