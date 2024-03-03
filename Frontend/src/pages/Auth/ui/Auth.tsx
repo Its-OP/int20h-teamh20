@@ -10,12 +10,9 @@ type FieldType = {
 };
 
 const Auth = () => {
-    const { signIn, signUp } = useAuth();
+    const { signIn } = useAuth();
 
     const [form] = useForm();
-    const reg = async () => {
-        await signUp(form.getFieldsValue());
-    };
 
     const logIn = async () => {
         await signIn(form.getFieldsValue());
@@ -82,14 +79,6 @@ const Auth = () => {
                                     gap: 10
                                 }}
                             >
-                                <Button
-                                    type='default'
-                                    style={{ flex: 1 }}
-                                    onClick={reg}
-                                    htmlType={"submit"}
-                                >
-                                    signUp
-                                </Button>
                                 <Button
                                     type='primary'
                                     style={{ flex: 1 }}
