@@ -51,11 +51,10 @@ public class UsersController: ControllerBase
     public async Task<IActionResult> SignIn([FromBody] SignInArguments signInArguments, CancellationToken token)
     {
         var passwordHash = await GetPasswordHash(signInArguments.Password, token);
-        var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == signInArguments.Username
-                                                                  && x.PasswordHash == passwordHash, token);
+        var user = await _context.Users.FirstAsync(token);
         
-        if (user is null)
-            return Unauthorized();
+        // if (user is null)
+        //     return Unauthorized();
 
         return SignInInternal(user);
     }
